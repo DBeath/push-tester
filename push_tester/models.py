@@ -41,6 +41,7 @@ class Entry(db.Model):
     content = db.Column(db.Text)
     summary = db.Column(db.Text)
     link = db.Column(db.String(512))
+    feed_id = db.Column(db.Integer, db.ForeignKey('feed.id'))
     feed = db.relationship('Feed', backref=db.backref('entries', order_by=id))
     authors = db.relationship('Author',
         secondary=authors_entries,

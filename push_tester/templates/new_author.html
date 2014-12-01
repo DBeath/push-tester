@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field %}
+{% block content %}
+<form action="" method="post" name="new_author">
+  {{form.hidden_tag()}}
+  <dl>
+    {{ render_field(form.name) }}
+    {{ render_field(form.email) }}
+  </dl>
+  <input type="submit" value="New Author">
+</form>
+{% endblock %}

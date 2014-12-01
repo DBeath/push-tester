@@ -1,9 +1,10 @@
 from push_tester import app, db, user_datastore
-from flask import render_template, redirect, url_for, g
+from flask import render_template, redirect, url_for, g, request, Response
 from flask.ext.login import current_user
 from flask.ext.security import login_required
 from flask.ext.security.utils import encrypt_password
-from models import User, Role
+from models import User, Role, Feed, Entry, Author
+from forms import AuthorForm
 
 @app.before_first_request
 def create_admin_user():
@@ -33,3 +34,22 @@ def index():
 @app.route('/create_entry')
 def create_entry():
     return redirect(url_for('index'))
+
+@app.route('/authors')
+def authors():
+    authors = Author.query.all()
+    return render_template('authors.html',
+        authors=authors,
+        title='Authors')
+
+@app.route('/authors/new', methods=['GET', 'POST'])
+def new_author():
+    form = AuthorForm()
+    if request.method == 'POST' and form.validate():
+        author = Author(name=form.name.data, email=form.email.data)
+        db.session.add(author)
+        db.session.commit()
+        return redirect(url_for('authors'))
+    return render_template('new_author.html',
+        title='New Author',
+        form=form)
