@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field %}
+{% block content %}
+<form action="" method="post" name="new_feed">
+  {{form.hidden_tag()}}
+  <dl>
+    {{ render_field(form.topic) }}
+    {{ render_field(form.description) }}
+    {{ render_field(form.hub) }}
+  </dl>
+  <input type="submit" value="New Feed">
+</form>
+{% endblock %}

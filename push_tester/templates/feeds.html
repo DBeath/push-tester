@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<a href="{{ url_for('new_feed') }}">New Feed</a>
+<table class="table table-condensed table-striped">
+  <thead>
+    <tr>
+      <th>Topic</th>
+      <th>Hub</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for feed in feeds %}
+      <tr>
+        <td>{{feed.topic}}</td>
+        <td>{{feed.hub}}</td>
+        <td>{{feed.description}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
