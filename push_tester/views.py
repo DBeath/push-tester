@@ -4,7 +4,7 @@ from flask.ext.login import current_user
 from flask.ext.security import login_required
 from flask.ext.security.utils import encrypt_password
 from models import User, Role, Feed, Entry, Author
-from forms import AuthorForm, FeedForm
+from forms import AuthorForm, FeedForm, EntryForm
 
 @app.before_first_request
 def create_admin_user():
@@ -73,4 +73,28 @@ def new_feed():
         return redirect(url_for('feeds'))
     return render_template('new_feed.html',
         title='New Feed',
+        form=form)
+
+@app.route('/entries')
+def entries():
+    entries = Entry.query.all()
+    return render_template('entries.html',
+        title='Entries',
+        entries=entries)
+
+@app.route('/entries/new', methods=['GET', 'POST'])
+def new_entry():
+    authors = Author.query.all()
+    form = EntryForm()
+    feeds = Feed.query.all()
+    print feeds
+    form.feed.choices = [(f.id, f.topic) for f in Feed.query.all()]
+    form.authors.choices = [(a.id, a.name) for a in Author.query.all()]
+    if request.method == 'POST' and form.validate():
+        entry = Entry()
+        db.session.add(entry)
+        db.commit()
+        return redirect(url_for('entries'))
+    return render_template('new_entry.html',
+        title='New Entry',
         form=form)

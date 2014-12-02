@@ -1,13 +1,26 @@
 from flask.ext.wtf import Form
-from wtforms import TextField
-from wtforms.validators import InputRequired
+from wtforms import StringField, TextAreaField, SelectField, validators, \
+    SelectMultipleField
+from wtforms.fields.html5 import DateField, DateTimeField
 
 class AuthorForm(Form):
-    name = TextField('Author', validators=[InputRequired()])
-    email = TextField('Email', validators=[])
+    name = StringField(u'Author', validators=[validators.InputRequired()])
+    email = StringField(u'Email', validators=[validators.Optional(), validators.Email()])
 
 
 class FeedForm(Form):
-    topic = TextField('Topic', validators=[InputRequired()])
-    description = TextField('Description', validators=[])
-    hub = TextField('Hub', validators=[])
+    topic = StringField(u'Topic', validators=[validators.InputRequired(), validators.URL()])
+    description = StringField(u'Description', validators=[validators.Optional()])
+    hub = StringField(u'Hub', validators=[validators.Optional(), validators.URL()])
+
+
+class EntryForm(Form):
+    title = StringField(u'Title', validators=[validators.Optional()])
+    guid = StringField(u'Guid', validators=[validators.Optional()])
+    published = DateTimeField(u'Published', validators=[validators.InputRequired()])
+    updated = DateField(u'Updated', validators=[validators.Optional()])
+    content = TextAreaField(u'Content', validators=[validators.Optional()])
+    summary = TextAreaField(u'Summary', validators=[validators.Optional()])
+    link = StringField(u'Link', validators=[validators.InputRequired()])
+    feed = SelectField(u'Feed', validators=[validators.InputRequired()])
+    authors = SelectMultipleField('Authors', validators=[validators.Optional()])

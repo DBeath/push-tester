@@ -27,6 +27,9 @@ class Feed(db.Model):
     description = db.Column(db.String(1024))
     hub = db.Column(db.String(255))
 
+    def __repr__(self):
+        return u'%s' % (self.topic)
+
 
 authors_entries = db.Table('authors_entries',
     db.Column('author_id', db.Integer, db.ForeignKey('author.id')),
@@ -52,3 +55,6 @@ class Author(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255))
     email = db.Column(db.String(255))
+
+    def __repr__(self):
+        return u'%s' % (self.name)
