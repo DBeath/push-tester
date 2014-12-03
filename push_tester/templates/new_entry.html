@@ -5,12 +5,10 @@
   {{form.hidden_tag()}}
   <dl>
     {{ render_field(form.title) }}
-    {{ render_field(form.guid) }}
-    {{ form.published.label}}{{ form.published(class='datepicker')}}
+    {{ render_field(form.published) }}
     {{ render_field(form.updated) }}
     {{ render_field(form.content) }}
     {{ render_field(form.summary) }}
-    {{ render_field(form.link) }}
     {{ render_field(form.feed) }}
     {{ render_field(form.authors) }}
   </dl>

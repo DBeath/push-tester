@@ -24,6 +24,7 @@ class User(db.Model, UserMixin):
 class Feed(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     topic = db.Column(db.String(255), unique=True)
+    title = db.Column(db.String(255))
     description = db.Column(db.String(1024))
     hub = db.Column(db.String(255))
 
@@ -57,4 +58,6 @@ class Author(db.Model):
     email = db.Column(db.String(255))
 
     def __repr__(self):
+        if self.email:
+            return u'%s (%s)' % (self.email, self.name)
         return u'%s' % (self.name)

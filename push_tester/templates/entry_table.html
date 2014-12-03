@@ -1,0 +1,34 @@
+<table class="table table-condensed table-striped">
+  <thead>
+    <tr>
+      <th>Delete</th>
+      <th>ID</th>
+      <th>Title</th>
+      <th>Guid</th>
+      <th>Published</th>
+      <th>Updated</th>
+      <th>Link</th>
+      <th>Feed</th>
+      <th>Authors</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for entry in entries %}
+      <tr>
+        <td>
+          <form action="{{ url_for('delete_entry', id=entry.id) }}" method="POST" role="form">
+            <button type="submit" class="btn btn-danger btn-xs" value="Delete">Delete</button>
+          </form>
+        </td>
+        <td>{{entry.id}}</td>
+        <td>{{entry.title}}</td>
+        <td>{{entry.guid}}</td>
+        <td>{{entry.published}}</td>
+        <td>{{entry.updated}}</td>
+        <td>{{entry.link}}</td>
+        <td>{{entry.feed}}</td>
+        <td>{{entry.authors}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

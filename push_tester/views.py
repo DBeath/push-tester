@@ -5,6 +5,8 @@ from flask.ext.security import login_required
 from flask.ext.security.utils import encrypt_password
 from models import User, Role, Feed, Entry, Author
 from forms import AuthorForm, FeedForm, EntryForm
+from datetime import datetime
+import PyRSS2Gen as RSS2
 
 @app.before_first_request
 def create_admin_user():
@@ -28,7 +30,13 @@ def before_request():
 
 @app.route('/')
 def index():
+    entry_count = Entry.query.count()
+    author_count = Author.query.count()
+    feed_count = Feed.query.count()
     return render_template('index.html',
+        author_count=author_count,
+        entry_count=entry_count,
+        feed_count=feed_count,
         title='Home')
 
 @app.route('/create_entry')
@@ -54,6 +62,13 @@ def new_author():
         title='New Author',
         form=form)
 
+@app.route('/authors/<int:id>/delete', methods=['POST'])
+def delete_author(id):
+    author = Author.query.get(id)
+    db.session.delete(author)
+    db.session.commit()
+    return redirect(url_for('authors'))
+
 @app.route('/feeds')
 def feeds():
     feeds = Feed.query.all()
@@ -65,15 +80,62 @@ def feeds():
 def new_feed():
     form = FeedForm()
     if request.method == 'POST' and form.validate():
-        feed = Feed(topic=form.topic.data)
+        feed = Feed()
+        feed.title = form.title.data
         feed.description = form.description.data
         feed.hub = form.hub.data
         db.session.add(feed)
+        db.session.flush()
+        feed.topic = app.config['FQDN'] + '/feeds/%s' % feed.id
         db.session.commit()
         return redirect(url_for('feeds'))
     return render_template('new_feed.html',
         title='New Feed',
         form=form)
+
+@app.route('/feeds/<int:id>', methods=['GET'])
+def feed(id):
+    feed = Feed.query.get(id)
+    return render_template('feed.html',
+        title='Feed %s' % id,
+        feed=feed)
+
+@app.route('/feeds/<int:id>/rss', methods=['GET'])
+def feed_rss(id):
+    feed = Feed.query.get(id)
+    entries = Entry.query.filter_by(feed_id=id).order_by(Entry.published.desc()).limit(10)
+
+    items = []
+    for entry in entries:
+        entry_author = ''
+        for author in entry.authors:
+            entry_author += repr(author) + ', '
+        item = RSS2.RSSItem(
+            title = entry.title,
+            link = entry.link,
+            description = entry.content,
+            guid = entry.guid, 
+            pubDate = entry.published,
+            author = entry_author)
+        items.append(item)
+
+    rss = RSS2.RSS2(
+        title=feed.title,
+        link=feed.topic,
+        description=feed.description,
+        lastBuildDate=datetime.utcnow(),
+        items=items)
+
+    return rss.to_xml()
+
+@app.route('/feeds/<int:id>/delete', methods=['POST'])
+def delete_feed(id):
+    feed = Feed.query.get(id)
+    for entry in feed.entries:
+        db.session.delete(entry)
+    db.session.delete(feed)
+    db.session.commit()
+    return redirect(url_for('feeds'))
 
 @app.route('/entries')
 def entries():
@@ -92,9 +154,30 @@ def new_entry():
     form.authors.choices = [(a.id, a.name) for a in Author.query.all()]
     if request.method == 'POST' and form.validate():
         entry = Entry()
+        entry.title = form.title.data
+        entry.published = form.published.data if form.published.data else datetime.utcnow()
+        entry.updated = form.updated.data
+        entry.content = form.content.data
+        entry.summary = form.summary.data
+        entry.feed_id = form.feed.data
+        for a in form.authors.data:
+            author = Author.query.get(a)
+            entry.authors.append(author)
         db.session.add(entry)
-        db.commit()
+
+        db.session.flush()
+        entry.guid = app.config['FQDN'] + '/entries/%s' % entry.id
+        entry.link = entry.guid
+        db.session.commit()
         return redirect(url_for('entries'))
+
     return render_template('new_entry.html',
         title='New Entry',
         form=form)
+
+@app.route('/entries/<int:id>/delete', methods=['POST'])
+def delete_entry(id):
+    entry = Entry.query.get(id)
+    db.session.delete(entry)
+    db.session.commit()
+    return redirect(url_for('entries'))

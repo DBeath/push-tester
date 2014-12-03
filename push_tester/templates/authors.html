@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-<a href="{{ url_for('new_author') }}">New Author</a>
+<a href="{{ url_for('new_author') }}" class="btn btn-primary">New Author</a>
 <table class="table table-condensed table-striped">
   <thead>
     <tr>
+      <th>Delete</th>
       <th>Name</th>
       <th>Email</th>
     </tr>
@@ -11,6 +12,11 @@
   <tbody>
     {% for author in authors %}
       <tr>
+        <td>
+          <form action="{{ url_for('delete_author', id=author.id) }}" method="POST" role="form">
+            <button type="submit" class="btn btn-danger btn-xs" value="Delete">Delete</button>
+          </form>
+        </td>
         <td>{{author.name}}</td>
         <td>{{author.email}}</td>
       </tr>

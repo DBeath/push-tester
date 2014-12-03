@@ -13,7 +13,7 @@ CSRF_SESSION_KEY = 'secretcsrfsession'
 
 SECRET_KEY = 'supersecretkey'
 
-FQDN = 'http://localhost:5000/'
+FQDN = 'http://localhost:5000'
 
 ADMIN_EMAIL = 'admin@localhost.com'
 ADMIN_PASSWORD = 'password'

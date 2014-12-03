@@ -1,9 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
-<a href="{{ url_for('new_feed') }}">New Feed</a>
+<a href="{{ url_for('new_feed') }}" class="btn btn-primary">New Feed</a>
 <table class="table table-condensed table-striped">
   <thead>
     <tr>
+      <th>Delete</th>
+      <th>RSS</th>
+      <th>ID</th>
+      <th>Title</th>
       <th>Topic</th>
       <th>Hub</th>
       <th>Description</th>
@@ -11,7 +15,15 @@
   </thead>
   <tbody>
     {% for feed in feeds %}
-      <tr>
+      <tr> 
+        <td>
+          <form action="{{ url_for('delete_feed', id=feed.id) }}" method="POST" role="form">
+            <input type="submit" class="btn btn-danger btn-xs" value="Delete"/>
+          </form>
+        </td>
+        <td><a href="{{ url_for('feed_rss', id=feed.id) }}" class="btn btn-primary btn-sm">RSS</a></td>
+        <td><a href="{{ url_for('feed', id=feed.id) }}">{{feed.id}}</a></td>
+        <td>{{feed.title}}</td>
         <td>{{feed.topic}}</td>
         <td>{{feed.hub}}</td>
         <td>{{feed.description}}</td>
