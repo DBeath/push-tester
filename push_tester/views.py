@@ -7,7 +7,21 @@ from models import User, Role, Feed, Entry, Author
 from forms import AuthorForm, FeedForm, EntryForm
 from datetime import datetime
 import PyRSS2Gen as RSS2
-from rfeed import Item, Feed as rFeed, Guid
+from rfeed import Item, Feed as rFeed, Guid, Serializable
+
+class PushLink(Serializable):
+    def __init__(self, rel=None, href=None, xmlns=None):
+        Serializable.__init__(self)
+
+        self.rel = rel
+        self.href = href
+        self.xmlns = xmlns
+
+    def publish(self, handler):
+        Serializable.publish(self, handler)
+        handler.startElement("link", {"rel": self.rel, "href": self.href, "xmlns": self.xmlns})
+        handler.endElement("link")
+
 
 @app.before_first_request
 def create_admin_user():
@@ -106,28 +120,6 @@ def feed_rss(id):
     feed = Feed.query.get(id)
     entries = Entry.query.filter_by(feed_id=id).order_by(Entry.published.desc()).limit(10)
 
-    # items = []
-    # for entry in entries:
-    #     entry_author = ''
-    #     for author in entry.authors:
-    #         entry_author += repr(author) + ', '
-    #     item = RSS2.RSSItem(
-    #         title = entry.title,
-    #         link = entry.link,
-    #         description = entry.content,
-    #         guid = entry.guid, 
-    #         pubDate = entry.published,
-    #         author = entry_author)
-    #     items.append(item)
-
-    # rss = RSS2.RSS2(
-    #     title=feed.title,
-    #     link=feed.topic,
-    #     description=feed.description,
-    #     lastBuildDate=datetime.utcnow(),
-    #     items=items)
-
-    # return rss.to_xml()
     items = []
     for entry in entries:
         entry_author = ''
@@ -148,7 +140,8 @@ def feed_rss(id):
         description = feed.description,
         lastBuildDate = datetime.utcnow(),
         language = "en-US",
-        items = items)
+        items = items,
+        extensions = [PushLink(rel='hub', href='http://test.superfeedr.com', xmlns='http://www.w3.org/2005/Atom')])
 
     f = open('rss.xml', 'w')
     f.write(rss.rss())
