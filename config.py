@@ -17,3 +17,5 @@ FQDN = 'http://localhost:5000'
 
 ADMIN_EMAIL = 'admin@localhost.com'
 ADMIN_PASSWORD = 'password'
+
+HUB_NAME = 'http://test.superfeedr.com/'
