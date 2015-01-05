@@ -1,5 +1,5 @@
 from push_tester import app, db, user_datastore
-from flask import render_template, redirect, url_for, g, request, Response
+from flask import render_template, redirect, url_for, g, request, Response, make_response
 from flask.ext.login import current_user
 from flask.ext.security import login_required
 from flask.ext.security.utils import encrypt_password
@@ -8,6 +8,7 @@ from forms import AuthorForm, FeedForm, EntryForm
 from datetime import datetime
 import PyRSS2Gen as RSS2
 from rfeed import Item, Feed as rFeed, Guid, Serializable
+from link_header import Link, LinkHeader
 
 
 @app.before_first_request
@@ -113,7 +114,12 @@ def feed_rss(id):
     f.write(rss.rss())
     f.close()
 
-    return rss.rss()
+    headers = {}
+    headers['Link'] = str(LinkHeader([
+        Link(app.config['HUB_NAME'], rel="hub"),
+        Link(feed.topic, rel="self")]))
+
+    return make_response(rss.rss(), 200, headers)
 
 @app.route('/feeds/<int:id>/delete', methods=['POST'])
 def delete_feed(id):
