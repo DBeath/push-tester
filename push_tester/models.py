@@ -61,7 +61,7 @@ class Feed(db.Model):
         language = "en-US",
         items = items,
         extensions = [
-            PushLink(rel='hub', href=app.config['HUB_NAME'], xmlns='http://www.w3.org/2005/Atom'),
+            PushLink(rel='hub', href=self.hub, xmlns='http://www.w3.org/2005/Atom'),
             PushLink(rel='self', href=self.topic, xmlns='http://www.w3.org/2005/Atom')])
 
         return rss

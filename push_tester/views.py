@@ -9,6 +9,7 @@ from datetime import datetime
 import PyRSS2Gen as RSS2
 from rfeed import Item, Feed as rFeed, Guid, Serializable
 from link_header import Link, LinkHeader
+import requests
 
 
 @app.before_first_request
@@ -116,10 +117,16 @@ def feed_rss(id):
 
     headers = {}
     headers['Link'] = str(LinkHeader([
-        Link(app.config['HUB_NAME'], rel="hub"),
+        Link(feed.hub, rel="hub"),
         Link(feed.topic, rel="self")]))
 
     return make_response(rss.rss(), 200, headers)
+
+@app.route('/feeds/<int:id>/ping', methods=['POST'])
+def feed_ping(id):
+    feed = Feed.query.get(id)
+
+    ping_hub(feed.hub, feed.topic)
 
 @app.route('/feeds/<int:id>/delete', methods=['POST'])
 def delete_feed(id):
@@ -174,3 +181,10 @@ def delete_entry(id):
     db.session.delete(entry)
     db.session.commit()
     return redirect(url_for('entries'))
+
+def ping_hub(hub, topic):
+    params = {
+        'hub.mode': 'publish',
+        'hub.url': topic
+    }
+    return requests.post(hub, params)
