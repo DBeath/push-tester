@@ -80,11 +80,13 @@ def feeds():
         feeds=feeds,
         title='Feeds')
 
+@login_required
 @app.route('/feeds/new', methods=['GET', 'POST'])
 def new_feed():
     form = FeedForm()
     if request.method == 'POST' and form.validate():
         feed = Feed()
+        feed.user = current_user
         feed.title = form.title.data
         feed.description = form.description.data
         feed.hub = form.hub.data

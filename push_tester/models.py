@@ -35,6 +35,7 @@ class User(db.Model, UserMixin):
     confirmed_at = db.Column(db.DateTime)
     roles = db.relationship('Role', secondary=roles_users,
                             backref=db.backref('users', lazy='dynamic'))
+    feeds = db.relationship('Feed', backref=db.backref('user'), lazy='dynamic')
 
 
 class Feed(db.Model):
@@ -44,6 +45,7 @@ class Feed(db.Model):
     description = db.Column(db.String(1024))
     hub = db.Column(db.String(255))
     entries = db.relationship('Entry', order_by="Entry.published.desc()", backref=db.backref('feed'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
         return u'%s' % (self.topic)
