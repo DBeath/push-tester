@@ -19,3 +19,5 @@ ADMIN_EMAIL = 'admin@localhost.com'
 ADMIN_PASSWORD = 'password'
 
 HUB_NAME = 'http://test.superfeedr.com/'
+
+DEBUG_TB_INTERCEPT_REDIRECTS = False

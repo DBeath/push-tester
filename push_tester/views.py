@@ -22,6 +22,14 @@ class ViewFeedPermission(Permission):
         need = ViewFeedNeed(unicode(feed_id))
         super(ViewFeedPermission, self).__init__(need)
 
+EntryNeed = namedtuple('entry', ['method', 'value'])
+ViewEntryNeed = partial(EntryNeed, 'view')
+
+class ViewEntryPermission(Permission):
+    def __init__(self, entry_id):
+        need = ViewEntryNeed(unicode(entry_id))
+        super(ViewEntryPermission, self).__init__(need)
+
 @identity_loaded.connect_via(app)
 def on_identity_loaded(sender, identity):
     identity.user = current_user
@@ -30,6 +38,9 @@ def on_identity_loaded(sender, identity):
         for feed in current_user.feeds:
             identity.provides.add(ViewFeedNeed(unicode(feed.id)))
 
+    if hasattr(current_user, 'entries'):
+        for entry in current_user.entries:
+            identity.provides.add(ViewEntryNeed(unicode(entry.id)))
 
 @app.before_first_request
 def create_admin_user():
@@ -179,21 +190,19 @@ def delete_feed(id):
 
 @app.route('/entries')
 def entries():
-    entries = Entry.query.all()
+    entries = Entry.query.filter_by(user_id=current_user.id)
     return render_template('entries.html',
         title='Entries',
         entries=entries)
 
 @app.route('/entries/new', methods=['GET', 'POST'])
 def new_entry():
-    authors = Author.query.all()
     form = EntryForm()
-    feeds = Feed.query.all()
-    print feeds
-    form.feed.choices = [(f.id, f.topic) for f in Feed.query.all()]
+    form.feed.choices = [(f.id, f.topic) for f in Feed.query.filter_by(user_id=current_user.id)]
     form.authors.choices = [(a.id, a.name) for a in Author.query.all()]
     if request.method == 'POST' and form.validate():
         entry = Entry()
+        entry.user = current_user
         entry.title = form.title.data
         entry.published = form.published.data if form.published.data else datetime.utcnow()
         entry.updated = form.updated.data
@@ -217,10 +226,15 @@ def new_entry():
 
 @app.route('/entries/<int:id>/delete', methods=['POST'])
 def delete_entry(id):
-    entry = Entry.query.get(id)
-    db.session.delete(entry)
-    db.session.commit()
-    return redirect(url_for('entries'))
+    permission = ViewEntryPermission(id)
+
+    if permission.can():
+        entry = Entry.query.get(id)
+        db.session.delete(entry)
+        db.session.commit()
+        return redirect(url_for('entries'))
+
+    abort(403)
 
 def ping_hub(hub, topic):
     params = {

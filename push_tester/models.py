@@ -36,6 +36,7 @@ class User(db.Model, UserMixin):
     roles = db.relationship('Role', secondary=roles_users,
                             backref=db.backref('users', lazy='dynamic'))
     feeds = db.relationship('Feed', backref=db.backref('user'), lazy='dynamic')
+    entries = db.relationship('Entry', backref=db.backref('user'), lazy='dynamic')
 
 
 class Feed(db.Model):
@@ -82,6 +83,7 @@ class Entry(db.Model):
     summary = db.Column(db.Text)
     link = db.Column(db.String(512))
     feed_id = db.Column(db.Integer, db.ForeignKey('feed.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     authors = db.relationship('Author',
         secondary=authors_entries,
         backref=db.backref('entries', lazy='dynamic'))
