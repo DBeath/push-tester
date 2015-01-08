@@ -133,35 +133,49 @@ def feed(id):
 
 @app.route('/feeds/<int:id>/rss', methods=['GET'])
 def feed_rss(id):
-    feed = Feed.query.get(id)
+    permission = ViewFeedPermission(id)
 
-    rss = feed.rss()
+    if permission.can():
+        feed = Feed.query.get(id)
 
-    f = open('rss.xml', 'w')
-    f.write(rss.rss())
-    f.close()
+        rss = feed.rss()
 
-    headers = {}
-    headers['Link'] = str(LinkHeader([
-        Link(feed.hub, rel="hub"),
-        Link(feed.topic, rel="self")]))
+        f = open('rss.xml', 'w')
+        f.write(rss.rss())
+        f.close()
 
-    return make_response(rss.rss(), 200, headers)
+        headers = {}
+        headers['Link'] = str(LinkHeader([
+            Link(feed.hub, rel="hub"),
+            Link(feed.topic, rel="self")]))
+
+        return make_response(rss.rss(), 200, headers)
+
+    abort(403)
 
 @app.route('/feeds/<int:id>/ping', methods=['POST'])
 def feed_ping(id):
-    feed = Feed.query.get(id)
+    permission = ViewFeedPermission(id)
 
-    ping_hub(feed.hub, feed.topic)
+    if permission.can():
+        feed = Feed.query.get(id)
+        ping_hub(feed.hub, feed.topic)
+
+    abort(403)
 
 @app.route('/feeds/<int:id>/delete', methods=['POST'])
 def delete_feed(id):
-    feed = Feed.query.get(id)
-    for entry in feed.entries:
-        db.session.delete(entry)
-    db.session.delete(feed)
-    db.session.commit()
-    return redirect(url_for('feeds'))
+    permission = ViewFeedPermission(id)
+
+    if permission.can():
+        feed = Feed.query.get(id)
+        for entry in feed.entries:
+            db.session.delete(entry)
+        db.session.delete(feed)
+        db.session.commit()
+        return redirect(url_for('feeds'))
+
+    abort(403)
 
 @app.route('/entries')
 def entries():
