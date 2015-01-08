@@ -37,6 +37,7 @@ class User(db.Model, UserMixin):
                             backref=db.backref('users', lazy='dynamic'))
     feeds = db.relationship('Feed', backref=db.backref('user'), lazy='dynamic')
     entries = db.relationship('Entry', backref=db.backref('user'), lazy='dynamic')
+    authors = db.relationship('Author', backref=db.backref('user'), lazy='dynamic')
 
 
 class Feed(db.Model):
@@ -107,6 +108,7 @@ class Author(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255))
     email = db.Column(db.String(255))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
         if self.email:

@@ -30,6 +30,14 @@ class ViewEntryPermission(Permission):
         need = ViewEntryNeed(unicode(entry_id))
         super(ViewEntryPermission, self).__init__(need)
 
+AuthorNeed = namedtuple('author', ['method', 'value'])
+ViewAuthorNeed = partial(AuthorNeed, 'view')
+
+class ViewAuthorPermission(Permission):
+    def __init__(self, author_id):
+        need = ViewAuthorNeed(unicode(author_id))
+        super(ViewAuthorPermission, self).__init__(need)
+
 @identity_loaded.connect_via(app)
 def on_identity_loaded(sender, identity):
     identity.user = current_user
@@ -79,7 +87,7 @@ def create_entry():
 
 @app.route('/authors')
 def authors():
-    authors = Author.query.all()
+    authors = Author.query.filter_by(user_id=current_user.id)
     return render_template('authors.html',
         authors=authors,
         title='Authors')
@@ -89,6 +97,7 @@ def new_author():
     form = AuthorForm()
     if request.method == 'POST' and form.validate():
         author = Author(name=form.name.data, email=form.email.data)
+        author.user = current_user
         db.session.add(author)
         db.session.commit()
         return redirect(url_for('authors'))
@@ -98,10 +107,15 @@ def new_author():
 
 @app.route('/authors/<int:id>/delete', methods=['POST'])
 def delete_author(id):
-    author = Author.query.get(id)
-    db.session.delete(author)
-    db.session.commit()
-    return redirect(url_for('authors'))
+    permission = ViewAuthorPermission(id)
+
+    if permission.can():
+        author = Author.query.get(id)
+        db.session.delete(author)
+        db.session.commit()
+        return redirect(url_for('authors'))
+
+    abort(403)
 
 @app.route('/feeds')
 def feeds():
@@ -199,7 +213,7 @@ def entries():
 def new_entry():
     form = EntryForm()
     form.feed.choices = [(f.id, f.topic) for f in Feed.query.filter_by(user_id=current_user.id)]
-    form.authors.choices = [(a.id, a.name) for a in Author.query.all()]
+    form.authors.choices = [(a.id, a.name) for a in Author.query.filter_by(user_id=current_user.id)]
     if request.method == 'POST' and form.validate():
         entry = Entry()
         entry.user = current_user
