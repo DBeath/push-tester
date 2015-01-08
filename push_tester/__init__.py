@@ -3,10 +3,12 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.security import Security, SQLAlchemyUserDatastore
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
+from flask_debugtoolbar import DebugToolbarExtension
 
 app = Flask(__name__)
 app.config.from_object('config')
 
+toolbar = DebugToolbarExtension(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 

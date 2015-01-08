@@ -1,15 +1,34 @@
 from push_tester import app, db, user_datastore
-from flask import render_template, redirect, url_for, g, request, Response, make_response
+from flask import render_template, redirect, url_for, g, request, Response, make_response, abort
 from flask.ext.login import current_user
 from flask.ext.security import login_required
 from flask.ext.security.utils import encrypt_password
+from flask.ext.principal import identity_loaded, Permission, RoleNeed, UserNeed
 from models import User, Role, Feed, Entry, Author
 from forms import AuthorForm, FeedForm, EntryForm
 from datetime import datetime
 import PyRSS2Gen as RSS2
 from rfeed import Item, Feed as rFeed, Guid, Serializable
 from link_header import Link, LinkHeader
+from collections import namedtuple
+from functools import partial
 import requests
+
+FeedNeed = namedtuple('feed', ['method', 'value'])
+ViewFeedNeed = partial(FeedNeed, 'view')
+
+class ViewFeedPermission(Permission):
+    def __init__(self, feed_id):
+        need = ViewFeedNeed(unicode(feed_id))
+        super(ViewFeedPermission, self).__init__(need)
+
+@identity_loaded.connect_via(app)
+def on_identity_loaded(sender, identity):
+    identity.user = current_user
+
+    if hasattr(current_user, 'feeds'):
+        for feed in current_user.feeds:
+            identity.provides.add(ViewFeedNeed(unicode(feed.id)))
 
 
 @app.before_first_request
@@ -75,7 +94,7 @@ def delete_author(id):
 
 @app.route('/feeds')
 def feeds():
-    feeds = Feed.query.all()
+    feeds = Feed.query.filter_by(user_id=current_user.id)
     return render_template('feeds.html',
         feeds=feeds,
         title='Feeds')
@@ -101,11 +120,16 @@ def new_feed():
 
 @app.route('/feeds/<int:id>', methods=['GET'])
 def feed(id):
-    feed = Feed.query.get(id)
-    return render_template('feed.html',
-        title='Feed %s' % id,
-        feed=feed,
-        entries = feed.entries)
+    permission = ViewFeedPermission(id)
+
+    if permission.can():
+        feed = Feed.query.get(id)
+        return render_template('feed.html',
+            title='Feed %s' % id,
+            feed=feed,
+            entries = feed.entries)
+
+    abort(403)
 
 @app.route('/feeds/<int:id>/rss', methods=['GET'])
 def feed_rss(id):
