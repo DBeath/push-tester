@@ -81,11 +81,14 @@ def index():
         feed_count=feed_count,
         title='Home')
 
+
 @app.route('/create_entry')
+@login_required
 def create_entry():
     return redirect(url_for('index'))
 
 @app.route('/authors')
+@login_required
 def authors():
     authors = Author.query.filter_by(user_id=current_user.id)
     return render_template('authors.html',
@@ -93,6 +96,7 @@ def authors():
         title='Authors')
 
 @app.route('/authors/new', methods=['GET', 'POST'])
+@login_required
 def new_author():
     form = AuthorForm()
     if request.method == 'POST' and form.validate():
@@ -106,6 +110,7 @@ def new_author():
         form=form)
 
 @app.route('/authors/<int:id>/delete', methods=['POST'])
+@login_required
 def delete_author(id):
     permission = ViewAuthorPermission(id)
 
@@ -117,7 +122,9 @@ def delete_author(id):
 
     abort(403)
 
+
 @app.route('/feeds')
+@login_required
 def feeds():
     feeds = Feed.query.filter_by(user_id=current_user.id)
     return render_template('feeds.html',
@@ -144,6 +151,7 @@ def new_feed():
         form=form)
 
 @app.route('/feeds/<int:id>', methods=['GET'])
+@login_required
 def feed(id):
     permission = ViewFeedPermission(id)
 
@@ -157,6 +165,7 @@ def feed(id):
     abort(403)
 
 @app.route('/feeds/<int:id>/rss', methods=['GET'])
+@login_required
 def feed_rss(id):
     permission = ViewFeedPermission(id)
 
@@ -179,6 +188,7 @@ def feed_rss(id):
     abort(403)
 
 @app.route('/feeds/<int:id>/ping', methods=['POST'])
+@login_required
 def feed_ping(id):
     permission = ViewFeedPermission(id)
 
@@ -189,6 +199,7 @@ def feed_ping(id):
     abort(403)
 
 @app.route('/feeds/<int:id>/delete', methods=['POST'])
+@login_required
 def delete_feed(id):
     permission = ViewFeedPermission(id)
 
@@ -203,6 +214,7 @@ def delete_feed(id):
     abort(403)
 
 @app.route('/entries')
+@login_required
 def entries():
     entries = Entry.query.filter_by(user_id=current_user.id)
     return render_template('entries.html',
@@ -210,6 +222,7 @@ def entries():
         entries=entries)
 
 @app.route('/entries/new', methods=['GET', 'POST'])
+@login_required
 def new_entry():
     form = EntryForm()
     form.feed.choices = [(f.id, f.topic) for f in Feed.query.filter_by(user_id=current_user.id)]
@@ -239,6 +252,7 @@ def new_entry():
         form=form)
 
 @app.route('/entries/<int:id>/delete', methods=['POST'])
+@login_required
 def delete_entry(id):
     permission = ViewEntryPermission(id)
 
