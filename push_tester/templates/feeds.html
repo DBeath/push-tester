@@ -5,6 +5,7 @@
   <thead>
     <tr>
       <th>Delete</th>
+      <th>Ping</th>
       <th>RSS</th>
       <th>ID</th>
       <th>Title</th>
@@ -19,6 +20,11 @@
         <td>
           <form action="{{ url_for('delete_feed', id=feed.id) }}" method="POST" role="form">
               <input type="submit" class="btn btn-danger btn-xs" value="Delete"/>
+          </form>
+        </td>
+        <td>
+          <form action="{{ url_for('feed_ping', id=feed.id) }}" method="POST" role="form">
+              <input type="submit" class="btn btn-primary btn-xs" value="Ping"/>
           </form>
         </td>
         <td><a href="{{ url_for('feed_rss', id=feed.id) }}" class="btn btn-primary btn-xs">RSS</a></td>

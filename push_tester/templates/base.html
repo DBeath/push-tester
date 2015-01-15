@@ -21,8 +21,8 @@
 
       <div class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
-          <li><a href="{{ url_for('index') }}">Home</a></li>
           {% if g.user.is_authenticated() %}
+          <li><a href="{{ url_for('index') }}">Home</a></li>
           <li><a href="{{ url_for('new_entry') }}">New Entry</a></li>
           <li><a href="{{ url_for('entries') }}">Entries</a></li>
           <li><a href="{{ url_for('authors') }}">Authors</a></li>
@@ -44,6 +44,16 @@
   {% endblock %}
   
   <div class="container-fluid">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class="flashes">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    
     {% block content %}{% endblock %}
   </div>
 </body>
