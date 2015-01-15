@@ -1,5 +1,5 @@
 from push_tester import app, db, user_datastore
-from flask import render_template, redirect, url_for, g, request, Response, make_response, abort
+from flask import render_template, redirect, url_for, g, request, Response, make_response, abort, flash
 from flask.ext.login import current_user
 from flask.ext.security import login_required
 from flask.ext.security.utils import encrypt_password
@@ -72,9 +72,9 @@ def before_request():
 
 @app.route('/')
 def index():
-    entry_count = Entry.query.count()
-    author_count = Author.query.count()
-    feed_count = Feed.query.count()
+    entry_count = Entry.query.filter_by(user_id=current_user.id).count()
+    author_count = Author.query.filter_by(user_id=current_user.id).count()
+    feed_count = Feed.query.filter_by(user_id=current_user.id).count()
     return render_template('index.html',
         author_count=author_count,
         entry_count=entry_count,
@@ -157,6 +157,7 @@ def feed(id):
 
     if permission.can():
         feed = Feed.query.get(id)
+        print feed.get_rss_url()
         return render_template('feed.html',
             title='Feed %s' % id,
             feed=feed,
@@ -194,7 +195,9 @@ def feed_ping(id):
 
     if permission.can():
         feed = Feed.query.get(id)
-        ping_hub(feed.hub, feed.topic)
+        message = feed.ping_hub()
+        flash(message)
+        return redirect(url_for('feeds'))
 
     abort(403)
 
@@ -262,11 +265,4 @@ def delete_entry(id):
         db.session.commit()
         return redirect(url_for('entries'))
 
-    abort(403)
-
-def ping_hub(hub, topic):
-    params = {
-        'hub.mode': 'publish',
-        'hub.url': topic
-    }
-    return requests.post(hub, params)
+    abort(403)  

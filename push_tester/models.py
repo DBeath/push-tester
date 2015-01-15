@@ -2,6 +2,7 @@ from push_tester import db, app
 from flask.ext.security import UserMixin, RoleMixin
 from rfeed import Item, Feed as rFeed, Guid, Serializable
 from datetime import datetime
+import requests
 
 class PushLink(Serializable):
     def __init__(self, rel=None, href=None, xmlns=None):
@@ -69,6 +70,21 @@ class Feed(db.Model):
             PushLink(rel='self', href=self.topic, xmlns='http://www.w3.org/2005/Atom')])
 
         return rss
+
+    def ping_hub(self):
+        params = {
+            'hub.mode': 'publish',
+            'hub.url': self.get_rss_url()
+        }
+        r = requests.post(self.hub, params)
+        if r.status_code == requests.codes.ok:
+            message = 'Hub was successfully pinged.'
+        else:
+            message = 'Ping was unsuccessful.'
+        return message
+
+    def get_rss_url(self):
+        return u'{0}/{1}'.format(self.topic, 'rss')
 
 authors_entries = db.Table('authors_entries',
     db.Column('author_id', db.Integer, db.ForeignKey('author.id')),
