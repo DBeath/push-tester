@@ -248,6 +248,12 @@ def new_entry():
         entry.guid = app.config['FQDN'] + '/entries/%s' % entry.id
         entry.link = entry.guid
         db.session.commit()
+
+        if form.ping.data:
+            feed = Feed.query.get(form.feed.data)
+            message = feed.ping_hub()
+            flash(message)
+            
         return redirect(url_for('entries'))
 
     return render_template('new_entry.html',

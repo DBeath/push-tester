@@ -1,6 +1,6 @@
 from flask.ext.wtf import Form
 from wtforms import StringField, TextAreaField, SelectField, validators, \
-    SelectMultipleField, FieldList
+    SelectMultipleField, FieldList, BooleanField
 from wtforms.fields.html5 import DateField, DateTimeField
 
 class AuthorForm(Form):
@@ -21,4 +21,5 @@ class EntryForm(Form):
     content = TextAreaField(u'Content', validators=[validators.Optional()])
     summary = TextAreaField(u'Summary', validators=[validators.Optional()])
     feed = SelectField(u'Feed', validators=[validators.InputRequired()], coerce=int)
-    authors = SelectMultipleField('Authors', validators=[validators.Optional()], coerce=int)
+    authors = SelectMultipleField(u'Authors', validators=[validators.Optional()], coerce=int)
+    ping = BooleanField(u'Ping Hub')
