@@ -228,7 +228,7 @@ def delete_feed(id):
 @app.route('/entries')
 @login_required
 def entries():
-    entries = Entry.query.filter_by(user_id=current_user.id)
+    entries = Entry.query.filter_by(user_id = current_user.id)
     return render_template('entries.html',
         title='Entries',
         entries=entries)
@@ -236,15 +236,14 @@ def entries():
 @app.route('/entries/new', methods=['GET', 'POST'])
 @login_required
 def new_entry():
-    feeds = Feed.query.filter_by(user_id=current_user.id).first()
-    print feeds
+    feeds = Feed.query.filter_by(user_id = current_user.id).all()
     if not feeds:
         flash(u'You must create a Feed first', ALERT.WARNING)
         return redirect(url_for('new_feed'))
 
     form = EntryForm()
     form.feed.choices = [(f.id, f.topic) for f in feeds]
-    form.authors.choices = [(a.id, a.name) for a in Author.query.filter_by(user_id=current_user.id)]
+    form.authors.choices = [(a.id, a.name) for a in Author.query.filter_by(user_id = current_user.id).all()]
     if request.method == 'POST' and form.validate():
         entry = Entry()
         entry.user = current_user
