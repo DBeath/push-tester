@@ -12,6 +12,7 @@ from rfeed import Item, Feed as rFeed, Guid, Serializable
 from link_header import Link, LinkHeader
 from collections import namedtuple
 from functools import partial
+from utils.bootstrap import ALERT
 import requests
 
 FeedNeed = namedtuple('feed', ['method', 'value'])
@@ -152,7 +153,7 @@ def new_feed():
         db.session.flush()
         feed.topic = app.config['FQDN'] + '/feeds/%s' % feed.id
         db.session.commit()
-        flash(u'{0} was successfully created'.format(feed.title), 'success')
+        flash(u'{0} was successfully created'.format(feed.title), ALERT.SUCCESS)
         return redirect(url_for('feeds'))
     return render_template('new_feed.html',
         title='New Feed',
@@ -238,7 +239,7 @@ def new_entry():
     feeds = Feed.query.filter_by(user_id=current_user.id).first()
     print feeds
     if not feeds:
-        flash(u'You must create a Feed first', 'danger')
+        flash(u'You must create a Feed first', ALERT.WARNING)
         return redirect(url_for('new_feed'))
 
     form = EntryForm()

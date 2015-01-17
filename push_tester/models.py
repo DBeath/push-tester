@@ -2,6 +2,7 @@ from push_tester import db, app
 from flask.ext.security import UserMixin, RoleMixin
 from rfeed import Item, Feed as rFeed, Guid, Serializable
 from datetime import datetime
+from utils.bootstrap import ALERT
 import requests
 
 class PushLink(Serializable):
@@ -78,9 +79,9 @@ class Feed(db.Model):
         }
         r = requests.post(self.hub, params)
         if r.status_code == requests.codes.ok:
-            message = 'Hub was successfully pinged.', 'success'
+            message = 'Hub was successfully pinged.', ALERT.SUCCESS
         else:
-            message = 'Ping was unsuccessful.', 'danger'
+            message = 'Ping was unsuccessful.', ALERT.ERROR
         return message
 
     def get_rss_url(self):
