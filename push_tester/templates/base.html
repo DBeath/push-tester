@@ -3,9 +3,9 @@
 <html>
 <head>
   {% if title %}
-  <title>{{title}} - PuSH Tester</title>
+  <title>{{title}} - {{ config["PROJECT_NAME"] }}</title>
   {% else %}
-  <title>PuSH Tester</title>
+  <title>{{ config["PROJECT_NAME"] }}</title>
   {% endif %}
 
   <link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -18,7 +18,7 @@
   <nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
       <div class="navbar-header">
-        <a class="navbar-brand" href="{{ url_for('index') }}">PuSH Tester</a>
+        <a class="navbar-brand" href="{{ url_for('index') }}">{{ config["PROJECT_NAME"] }}</a>
       </div>
 
       <div class="collapse navbar-collapse">

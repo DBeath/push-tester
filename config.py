@@ -1,26 +1,30 @@
-DEBUG = True
-
 import os
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
-SECURITY_PASSWORD_HASH = 'bcrypt'
-SECURITY_PASSWORD_SALT = 'verysalty'
-SECURITY_REGISTERABLE = True
-SECURITY_RECOVERABLE = True
-SECURITY_CHANGEABLE = True
+class BaseConfig:
+	PROJECT_NAME = 'Push-Tester'
 
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app.db')
+	DEBUG = True
+	
+	BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
-CSRF_ENABLED = True
-CSRF_SESSION_KEY = 'secretcsrfsession'
+	SECURITY_PASSWORD_HASH = 'bcrypt'
+	SECURITY_PASSWORD_SALT = 'verysalty'
+	SECURITY_REGISTERABLE = True
+	SECURITY_RECOVERABLE = True
+	SECURITY_CHANGEABLE = True
 
-SECRET_KEY = 'supersecretkey'
+	SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app.db')
 
-FQDN = 'http://localhost:5000'
+	CSRF_ENABLED = True
+	CSRF_SESSION_KEY = 'secretcsrfsession'
 
-ADMIN_EMAIL = 'admin@localhost.com'
-ADMIN_PASSWORD = 'password'
+	SECRET_KEY = 'supersecretkey'
 
-HUB_NAME = 'http://test.superfeedr.com/'
+	FQDN = 'http://localhost:5000'
 
-DEBUG_TB_INTERCEPT_REDIRECTS = False
+	ADMIN_EMAIL = 'admin@localhost.com'
+	ADMIN_PASSWORD = 'password'
+
+	HUB_NAME = 'http://test.superfeedr.com/'
+
+	DEBUG_TB_INTERCEPT_REDIRECTS = False

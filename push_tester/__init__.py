@@ -5,8 +5,10 @@ from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
 from flask_debugtoolbar import DebugToolbarExtension
 
+# from config import BaseConfig
+
 app = Flask(__name__)
-app.config.from_object('config')
+app.config.from_object('config.BaseConfig')
 
 toolbar = DebugToolbarExtension(app)
 db = SQLAlchemy(app)
