@@ -38,6 +38,8 @@ class ViewAuthorPermission(Permission):
         need = ViewAuthorNeed(unicode(author_id))
         super(ViewAuthorPermission, self).__init__(need)
 
+admin_permission = Permission(RoleNeed('admin'))
+
 @identity_loaded.connect_via(app)
 def on_identity_loaded(sender, identity):
     identity.user = current_user
@@ -72,13 +74,18 @@ def before_request():
 
 @app.route('/')
 def index():
-    entry_count = Entry.query.filter_by(user_id=current_user.id).count()
-    author_count = Author.query.filter_by(user_id=current_user.id).count()
-    feed_count = Feed.query.filter_by(user_id=current_user.id).count()
+    if current_user.is_authenticated():
+        entry_count = Entry.query.filter_by(user_id=current_user.id).count()
+        author_count = Author.query.filter_by(user_id=current_user.id).count()
+        feed_count = Feed.query.filter_by(user_id=current_user.id).count()
+
+        return render_template('index.html',
+            author_count=author_count,
+            entry_count=entry_count,
+            feed_count=feed_count,
+            title='Home')
+
     return render_template('index.html',
-        author_count=author_count,
-        entry_count=entry_count,
-        feed_count=feed_count,
         title='Home')
 
 
