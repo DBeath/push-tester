@@ -1,18 +1,24 @@
 {% extends "base.html" %}
-{% from "_formhelpers.html" import render_field %}
+
 {% block content %}
-<form action="" method="post" name="new_entry">
-  {{form.hidden_tag()}}
-  <dl>
-    {{ render_field(form.title) }}
-    {{ render_field(form.published) }}
-    {{ render_field(form.updated) }}
-    {{ render_field(form.content) }}
-    {{ render_field(form.summary) }}
-    {{ render_field(form.feed) }}
-    {{ render_field(form.authors) }}
-    {{ render_field(form.ping) }}
-  </dl>
-  <input type="submit" value="New Entry">
+<div class="page-header">
+  <h1>Create a new Entry</h1>
+</div>
+
+<form class="form form-horizontal" action="{{ url_for('new_entry') }}" method="post" name="new_entry_form">
+  {{ new_entry_form.csrf_token }}
+
+  {{ wtf.horizontal_field(new_entry_form.title) }}
+  {{ wtf.horizontal_field(new_entry_form.published) }}
+  {{ wtf.horizontal_field(new_entry_form.updated) }}
+  {{ wtf.horizontal_field(new_entry_form.content) }}
+  {{ wtf.horizontal_field(new_entry_form.summary) }}
+  {{ wtf.horizontal_field(new_entry_form.feed) }}
+  {{ wtf.horizontal_field(new_entry_form.authors) }}
+  {{ wtf.horizontal_field(new_entry_form.ping) }}
+
+  <div class="col-lg-offset-2">
+    <input type="submit" value="Create Entry" class="btn btn-primary" />
+  </div>
 </form>
 {% endblock %}

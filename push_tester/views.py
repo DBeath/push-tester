@@ -114,7 +114,7 @@ def new_author():
         return redirect(url_for('authors'))
     return render_template('new_author.html',
         title='New Author',
-        form=form)
+        new_author_form=form)
 
 @app.route('/authors/<int:id>/delete', methods=['POST'])
 @login_required
@@ -152,10 +152,11 @@ def new_feed():
         db.session.flush()
         feed.topic = app.config['FQDN'] + '/feeds/%s' % feed.id
         db.session.commit()
+        flash(u'{0} was successfully created'.format(feed.title), 'success')
         return redirect(url_for('feeds'))
     return render_template('new_feed.html',
         title='New Feed',
-        form=form)
+        new_feed_form=form)
 
 @app.route('/feeds/<int:id>', methods=['GET'])
 @login_required
@@ -203,7 +204,7 @@ def feed_ping(id):
     if permission.can():
         feed = Feed.query.get(id)
         message = feed.ping_hub()
-        flash(message)
+        flash(message[0], message[1])
         return redirect(url_for('feeds'))
 
     abort(403)
@@ -234,8 +235,14 @@ def entries():
 @app.route('/entries/new', methods=['GET', 'POST'])
 @login_required
 def new_entry():
+    feeds = Feed.query.filter_by(user_id=current_user.id).first()
+    print feeds
+    if not feeds:
+        flash(u'You must create a Feed first', 'danger')
+        return redirect(url_for('new_feed'))
+
     form = EntryForm()
-    form.feed.choices = [(f.id, f.topic) for f in Feed.query.filter_by(user_id=current_user.id)]
+    form.feed.choices = [(f.id, f.topic) for f in feeds]
     form.authors.choices = [(a.id, a.name) for a in Author.query.filter_by(user_id=current_user.id)]
     if request.method == 'POST' and form.validate():
         entry = Entry()
@@ -259,13 +266,12 @@ def new_entry():
         if form.ping.data:
             feed = Feed.query.get(form.feed.data)
             message = feed.ping_hub()
-            flash(message)
-            
+            flash(message[0], message[1])    
         return redirect(url_for('entries'))
 
     return render_template('new_entry.html',
         title='New Entry',
-        form=form)
+        new_entry_form=form)
 
 @app.route('/entries/<int:id>/delete', methods=['POST'])
 @login_required
