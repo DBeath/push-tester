@@ -244,6 +244,10 @@ def new_entry():
     form = EntryForm()
     form.feed.choices = [(f.id, f.topic) for f in feeds]
     form.authors.choices = [(a.id, a.name) for a in Author.query.filter_by(user_id = current_user.id).all()]
+    if request.method == 'POST':
+        print form.published
+        print form.published.data
+
     if request.method == 'POST' and form.validate():
         entry = Entry()
         entry.user = current_user

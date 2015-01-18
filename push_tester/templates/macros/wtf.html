@@ -14,9 +14,17 @@
       {{field(**kwargs)|safe}}
       <label>
     </div>
+    {% elif field|is_datetime_field %}
+      {{field(class="form-control", **{'data-date-format': "YYYY/MM/DD hh:mm:ss" })|safe}}
+      <script type="text/javascript">
+        $(function () {
+          $('#{{ field.id }}').datetimepicker();
+        });
+      </script>
     {% else %}
     {{field(class="form-control", **kwargs)|safe}}
     {% endif %}
+
   </div>
 
   {%- if field.errors %}

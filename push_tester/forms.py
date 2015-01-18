@@ -1,7 +1,8 @@
 from flask.ext.wtf import Form
 from wtforms import StringField, TextAreaField, SelectField, validators, \
     SelectMultipleField, FieldList, BooleanField
-from wtforms.fields.html5 import DateField, DateTimeField
+# from wtforms.fields.html5 import DateField, DateTimeField
+from wtforms.ext.dateutil.fields import DateTimeField, DateField
 
 class AuthorForm(Form):
     name = StringField(u'Author', validators=[validators.InputRequired()])
@@ -16,8 +17,8 @@ class FeedForm(Form):
 
 class EntryForm(Form):
     title = StringField(u'Title', validators=[validators.Optional()])
-    published = DateTimeField(u'Published', validators=[validators.Optional()])
-    updated = DateField(u'Updated', validators=[validators.Optional()])
+    published = DateTimeField(u'Published', display_format='YYYY/MM/DD hh:mm:ss', validators=[validators.Optional()])
+    updated = DateTimeField(u'Updated', display_format='YYYY/MM/DD hh:mm:ss', validators=[validators.Optional()])
     content = TextAreaField(u'Content', validators=[validators.Optional()])
     summary = TextAreaField(u'Summary', validators=[validators.Optional()])
     feed = SelectField(u'Feed', validators=[validators.InputRequired()], coerce=int)
