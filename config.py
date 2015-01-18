@@ -7,18 +7,24 @@ class BaseConfig:
 	
 	BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
-	SECURITY_PASSWORD_HASH = 'bcrypt'
-	SECURITY_PASSWORD_SALT = 'verysalty'
 	SECURITY_REGISTERABLE = True
 	SECURITY_RECOVERABLE = True
 	SECURITY_CHANGEABLE = True
+	SECURITY_TRACKABLE = True
+
+	SECURITY_PASSWORD_HASH = 'bcrypt'
+
+	SECURITY_PASSWORD_SALT = "0Cd3c-zGAcgE8mJQqWlO6xXq9nLrax3i"
+	SECURITY_CONFIRM_SALT = "fMcatrYiEcatqj-iX88SpDufjUf9fmrd"
+	SECURITY_RESET_SALT = "7aN1aWKlXp9aXT9mOGIi86D4-jhaqHXb"
+	SECURITY_REMEMBER_SALT = "YAZEI0YzVSzo8y0gGLptoYppvJCGrMQj"
 
 	SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app.db')
 
 	CSRF_ENABLED = True
-	CSRF_SESSION_KEY = 'secretcsrfsession'
+	CSRF_SESSION_KEY = 'bEX878f8LR3eHYByk2Dx2LKSxRmaQb4t'
 
-	SECRET_KEY = 'supersecretkey'
+	SECRET_KEY = '0CXgQPimsi72T-_XZPWTOKlBiaFuWPdz'
 
 	FQDN = 'http://localhost:5000'
 
@@ -28,3 +34,16 @@ class BaseConfig:
 	HUB_NAME = 'http://test.superfeedr.com/'
 
 	DEBUG_TB_INTERCEPT_REDIRECTS = False
+
+	MAIL_SERVER = 'smtp.gmail.com'
+	MAIL_PORT = 465
+	MAIL_USE_SSL = True
+	MAIL_USERNAME = 'pushtester@gmail.com'
+	MAIL_PASSWORD = ''
+
+	DEFAULT_MAIL_SENDER = ("Push-Tester", "pushtester@gmail.com")
+
+
+class ProductionConfig(BaseConfig):
+	DEBUG = False
+	PROPAGATE_EXCEPTIONS = True
