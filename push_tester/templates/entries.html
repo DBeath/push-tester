@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-<a href="{{ url_for('new_entry') }}" class="btn btn-primary">New Entry</a>
+<div>
+  <a href="{{ url_for('new_entry') }}" class="btn btn-primary"><i class="fa fa-plus fa-fw"></i> New Entry</a>
+</div>
+<br/>
 {% include "entry_table.html" %}
 {% endblock %}

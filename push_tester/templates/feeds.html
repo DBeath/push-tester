@@ -1,36 +1,40 @@
 {% extends "base.html" %}
 {% block content %}
-<a href="{{ url_for('new_feed') }}" class="btn btn-primary">New Feed</a>
+<div>
+  <a href="{{ url_for('new_feed') }}" class="btn btn-primary"><i class="fa fa-plus fa-fw"></i> New Feed</a>
+</div>
+<br/>
+
 <table class="table table-condensed table-striped">
   <thead>
     <tr>
-      <th>Delete</th>
-      <th>Ping</th>
-      <th>RSS</th>
+      <th class="col-sm-1">Ping</th>
+      <th class="col-sm-1">RSS</th>
       <th>Title</th>
       <th>Topic</th>
       <th>Hub</th>
       <th>Description</th>
+      <th class="col-sm-1">Delete</th>
     </tr>
   </thead>
   <tbody>
     {% for feed in feeds %}
       <tr> 
-        <td>
-          <form action="{{ url_for('delete_feed', id=feed.id) }}" method="POST" role="form">
-              <input type="submit" class="btn btn-danger btn-xs" value="Delete"/>
-          </form>
-        </td>
-        <td>
+        <td class="col-sm-1">
           <form action="{{ url_for('feed_ping', id=feed.id) }}" method="POST" role="form">
-              <input type="submit" class="btn btn-primary btn-xs" value="Ping"/>
+              <button type="submit" class="btn btn-info btn-xs" value="Ping"><i class="fa fa-wifi fa-fw"></i> Ping Hub</button>
           </form>
         </td>
-        <td><a href="{{ url_for('feed_rss', id=feed.id) }}" class="btn btn-primary btn-xs">RSS</a></td>
+        <td class="col-sm-1"><a href="{{ url_for('feed_rss', id=feed.id) }}" class="btn btn-warning btn-xs"><i class="fa fa-rss fa-fw"></i> RSS</a></td>
         <td>{{feed.title}}</td>
         <td><a href="{{ url_for('feed', id=feed.id) }}">{{feed.topic}}</a></td>
         <td>{{feed.hub}}</td>
         <td>{{feed.description}}</td>
+        <td class="col-sm-1">
+          <form action="{{ url_for('delete_feed', id=feed.id) }}" method="POST" role="form">
+              <button type="submit" class="btn btn-danger btn-xs" value="Delete"><i class="fa fa-trash-o fa-fw"></i> Delete</button>
+          </form>
+        </td>
       </tr>
     {% endfor %}
   </tbody>
