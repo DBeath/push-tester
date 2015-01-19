@@ -23,4 +23,4 @@ class EntryForm(Form):
     summary = TextAreaField(u'Summary', validators=[validators.Optional()])
     feed = SelectField(u'Feed', validators=[validators.InputRequired()], coerce=int)
     authors = SelectMultipleField(u'Authors', validators=[validators.Optional()], coerce=int)
-    ping = BooleanField(u'Ping Hub')
+    ping = BooleanField(u'Ping Hub', default=True)

@@ -68,10 +68,6 @@ def create_admin_user():
         user_datastore.activate_user(adminUser)
         db.session.add(adminUser)
     db.session.commit()
-    
-@app.before_request
-def before_request():
-    g.user = current_user
 
 @app.route('/')
 def index():

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-	{% if g.user.is_authenticated() %}
+	{% if current_user.is_authenticated() %}
 	<p>Entries: {{entry_count}}</p>
   <p>Feeds: {{feed_count}}</p>
   <p>Authors: {{author_count}}</p>
