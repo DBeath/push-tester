@@ -76,14 +76,14 @@ def index():
         author_count = Author.query.filter_by(user_id=current_user.id).count()
         feed_count = Feed.query.filter_by(user_id=current_user.id).count()
 
-        return render_template('index.html',
+        return render_template('home.html',
             author_count=author_count,
             entry_count=entry_count,
             feed_count=feed_count,
             title='Home')
 
     return render_template('index.html',
-        title='Home')
+        title='Index')
 
 
 @app.route('/create_entry')
