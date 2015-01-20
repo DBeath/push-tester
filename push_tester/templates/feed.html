@@ -3,3 +3,9 @@
 <p>{{feed.topic}}</p>
 {% include "entry_table.html" %}
 {% endblock %}
+
+{% block rss_discovery %}
+<link rel="alternate" type="application/rss+xml" 
+  title="{%if feed.title %}{{feed.title}}{% else %}{{feed.topic}}{% endif %}" 
+  href="{{feed.get_rss_url()}}">
+{% endblock %}

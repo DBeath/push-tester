@@ -1,7 +1,7 @@
 import os
 
 class BaseConfig:
-	PROJECT_NAME = 'Push-Tester'
+	PROJECT_NAME = 'PuSH-Tester'
 
 	DEBUG = True
 	

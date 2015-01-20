@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="row col-sm-6 vertical-align">
-  <div class="text-center">
-  <h1 class="vertical-align">Welcome to Push-Tester</h1>
+<div class="row row-centered">
+  <div class="col-xs-4 col-centered">
+  <h1 class="text-center">Welcome to {{ config["PROJECT_NAME"] }}</h1>
+  <p>Push-Tester is an application designed to allow the creation of <a href="http://en.wikipedia.org/wiki/RSS">RSS</a> feeds for 
+  testing <a href="https://code.google.com/p/pubsubhubbub/">PubSubHubbub</a> Hubs and Subscribers.</p>
+
   </div>
 </div>
 {% endblock %}

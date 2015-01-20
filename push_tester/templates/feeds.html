@@ -40,3 +40,11 @@
   </tbody>
 </table>
 {% endblock %}
+
+{% block rss_discovery %}
+  {% for feed in feeds %}
+    <link rel="alternate" type="application/rss+xml" 
+    title="{%if feed.title %}{{feed.title}}{% else %}{{feed.topic}}{% endif %}" 
+    href="{{feed.get_rss_url()}}">
+  {% endfor %}
+{% endblock %}
