@@ -27,4 +27,5 @@ security = Security(app, user_datastore)
 from utils import wtf
 wtf.add_helpers(app)
 
-import push_tester.views
+from .views import *
+from .errors import *
