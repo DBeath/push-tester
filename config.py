@@ -26,7 +26,11 @@ class BaseConfig:
 
 	SECRET_KEY = '0CXgQPimsi72T-_XZPWTOKlBiaFuWPdz'
 
+	# The Fully Qualified Domain Name where this application runs.
 	FQDN = 'http://localhost:5000'
+
+	# Set to True if using a reverse proxy like Nginx.
+	USE_PROXY = False
 
 	ADMIN_EMAIL = 'admin@localhost.com'
 	ADMIN_PASSWORD = 'password'

@@ -4,11 +4,15 @@ from flask.ext.security import Security, SQLAlchemyUserDatastore
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
 from flask_debugtoolbar import DebugToolbarExtension
+from werkzeug.contrib.fixers import ProxyFix
 
 # from config import BaseConfig
 
 app = Flask(__name__)
 app.config.from_object('config.BaseConfig')
+
+if app.config['USE_PROXY']:
+	app.wsgi_app = ProxyFix(app.wsgi_app)
 
 toolbar = DebugToolbarExtension(app)
 db = SQLAlchemy(app)
