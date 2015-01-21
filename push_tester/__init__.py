@@ -24,7 +24,7 @@ from models import Role, User
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 
-from utils import wtf
+from .utils import wtf, assets
 wtf.add_helpers(app)
 
 from .views import *

@@ -55,3 +55,4 @@ target/
 
 **/rss.xml
 *.db
+**/static/.*

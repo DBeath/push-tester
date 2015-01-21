@@ -5,7 +5,15 @@
   <h1 class="text-center">Welcome to {{ config["PROJECT_NAME"] }}</h1>
   <p>Push-Tester is an application designed to allow the creation of <a href="http://en.wikipedia.org/wiki/RSS">RSS</a> feeds for 
   testing <a href="https://code.google.com/p/pubsubhubbub/">PubSubHubbub</a> Hubs and Subscribers.</p>
+  <p>Entries can then be created for these feeds, and the feed's hub can be pinged to notify it of updates.</p>
+  <br/>
 
+  <div class="col-centered">
+    <a href="{{ url_for_security('register') }}" class="btn btn-primary">Register</a>
+     or 
+    <a href="{{ url_for_security('login') }}" class="btn btn-primary">Login</a>
+  </div>
+  <p>Registration is required only to allow access control for individual feeds. There are no fees, and your email will never be used for anything other than this service.</p>
   </div>
 </div>
 {% endblock %}
