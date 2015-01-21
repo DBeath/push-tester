@@ -1,19 +1,19 @@
-from push_tester import app, db, user_datastore
+from . import app, db, user_datastore
 from flask import render_template, redirect, url_for, g, request, Response, make_response, abort, flash
 from flask.ext.login import current_user
 from flask.ext.security import login_required
 from flask.ext.security.utils import encrypt_password
 from flask.ext.principal import identity_loaded, Permission, RoleNeed, UserNeed
-from models import User, Role, Feed, Entry, Author
-from forms import AuthorForm, FeedForm, EntryForm
 from datetime import datetime
-import PyRSS2Gen as RSS2
-from rfeed import Item, Feed as rFeed, Guid, Serializable
 from link_header import Link, LinkHeader
 from collections import namedtuple
 from functools import partial
-from utils.bootstrap import ALERT
 import requests
+from .models import User, Role, Feed, Entry, Author
+from .forms import AuthorForm, FeedForm, EntryForm
+from .rfeed import Item, Feed as rFeed, Guid, Serializable
+from .utils.bootstrap import ALERT
+
 
 FeedNeed = namedtuple('feed', ['method', 'value'])
 ViewFeedNeed = partial(FeedNeed, 'view')

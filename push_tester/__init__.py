@@ -6,8 +6,6 @@ from flask.ext.migrate import Migrate, MigrateCommand
 from flask_debugtoolbar import DebugToolbarExtension
 from werkzeug.contrib.fixers import ProxyFix
 
-# from config import BaseConfig
-
 app = Flask(__name__)
 app.config.from_object('config.BaseConfig')
 

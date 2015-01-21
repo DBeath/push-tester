@@ -1,9 +1,9 @@
-from push_tester import db, app
+from . import db, app
 from flask.ext.security import UserMixin, RoleMixin
-from rfeed import Item, Feed as rFeed, Guid, Serializable
 from datetime import datetime
-from utils.bootstrap import ALERT
 import requests
+from .rfeed import Item, Feed as rFeed, Guid, Serializable
+from .utils.bootstrap import ALERT
 
 class PushLink(Serializable):
     def __init__(self, rel=None, href=None, xmlns=None):
