@@ -28,6 +28,9 @@ class Role(db.Model, RoleMixin):
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
 
+    def __repr__(self):
+        return u'{0}'.format(self.name)
+
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -47,6 +50,9 @@ class User(db.Model, UserMixin):
     current_login_ip = db.Column(db.String(32))
     login_count = db.Column(db.Integer())
 
+    def __repr__(self):
+        return u'{0}'.format(self.email)
+
 
 class Feed(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -58,7 +64,7 @@ class Feed(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
-        return u'%s' % (self.topic)
+        return u'{0}'.format(self.topic)
 
     def rss(self):
         items = []
@@ -112,6 +118,11 @@ class Entry(db.Model):
         secondary=authors_entries,
         backref=db.backref('entries', lazy='dynamic'))
 
+    def __repr__(self):
+        if self.title:
+            return u'{0}'.format(self.title)
+        return u'{0}'.format(self.link)
+
     def rss(self):
         entry_author = ''
         for author in self.authors:
@@ -135,5 +146,5 @@ class Author(db.Model):
 
     def __repr__(self):
         if self.email:
-            return u'%s (%s)' % (self.email, self.name)
-        return u'%s' % (self.name)
+            return u'{0} ({1})'.format(self.email, self.name)
+        return u'{0}'.format(self.name)
