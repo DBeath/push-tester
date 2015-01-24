@@ -1,19 +1,26 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="row row-centered">
-  <div class="col-xs-4 col-centered">
-  <h1 class="text-center">Welcome to {{ config["PROJECT_NAME"] }}</h1>
-  <p>Push-Tester is an application designed to allow the creation of <a href="http://en.wikipedia.org/wiki/RSS">RSS</a> feeds for 
-  testing <a href="https://code.google.com/p/pubsubhubbub/">PubSubHubbub</a> Hubs and Subscribers.</p>
-  <p>Entries can then be created for these feeds, and the feed's hub can be pinged to notify it of updates.</p>
-  <br/>
 
-  <div class="col-centered">
-    <a href="{{ url_for_security('register') }}" class="btn btn-primary">Register</a>
-     or 
-    <a href="{{ url_for_security('login') }}" class="btn btn-primary">Login</a>
-  </div>
-  <p>Registration is required only to allow access control for individual feeds. There are no fees, and your email will never be used for anything other than this service.</p>
+<div class="row row-centered">
+  <div class="col-lg-4 col-md-6 col-centered">
+    <h1 class="text-center">Welcome to {{ config["PROJECT_NAME"] }}</h1>
+    <p>Push-Tester is an application designed to allow the creation of <a href="http://en.wikipedia.org/wiki/RSS">RSS</a> feeds for 
+    testing <a href="https://code.google.com/p/pubsubhubbub/">PubSubHubbub</a> Hubs and Subscribers.</p>
+    <p>Entries can then be created for these feeds, and the feed's hub can be pinged to notify it of updates.</p>
+    <br/>
+    <div class="row row-centered">
+      <div class="col-lg-6 col-md-6 col-sm-4 col-xs-6 col-centered">
+        <a class="btn btn-primary btn-block" value="Register" href="{{ url_for_security('register') }}" ><i class="fa fa-send fa-fw"></i> Register</a> 
+      </div>
+    </div>
+    <br/>
+    <p>Registration is required only to allow access control for individual feeds. There are no fees, and your email will never be used for anything other than this service.</p>
+    <br/>
+    <div class="row row-centered">
+      <div class="col-lg-6 col-md-6 col-sm-4 col-xs-6 col-centered">
+        <a class="btn btn-primary btn-block" value="Login" href="{{ url_for_security('login') }}" ><i class="fa fa-sign-in fa-fw"></i> Login</a>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}

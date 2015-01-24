@@ -2,23 +2,15 @@
 {% block content %}
   <div class="col-sm-2">
     <div>
-      <button class="btn btn-primary"value="New Entry" href="{{ url_for('new_feed') }}" ><i class="fa fa-plus fa-fw"></i>  New Feed</button>
-      
+      <a class="btn btn-primary btn-block" value="New Entry" href="{{ url_for('new_feed') }}" >New Feed  <span class="badge">{{feed_count}}</span></a>
     </div>
     <br/>
     <div>
-      <button class="btn btn-primary"value="New Entry" href="{{ url_for('new_entry') }}" ><i class="fa fa-plus fa-fw"></i>  New Entry</button>
-      
+      <a class="btn btn-primary btn-block" value="New Entry" href="{{ url_for('new_entry') }}" >New Entry  <span class="badge">{{entry_count}}</span></a>
     </div>
     <br/>
     <div>
-      <button class="btn btn-primary"value="New Entry" href="{{ url_for('new_author') }}" ><i class="fa fa-plus fa-fw"></i>  New Author</button>
-      
+      <a class="btn btn-primary btn-block" value="New Entry" href="{{ url_for('new_author') }}" >New Author  <span class="badge">{{author_count}}</span></a>
     </div>
-  </div>
-  <div class="col-sm-2">
-    <div>Feeds: {{feed_count}}</div>
-    <div>Entries: {{entry_count}}</div>
-    <div>Authors: {{author_count}}</div>
   </div>
 {% endblock %}

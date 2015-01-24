@@ -83,7 +83,7 @@ def index():
             title='Home')
 
     return render_template('index.html',
-        title='Index')
+        title='Home')
 
 
 @app.route('/create_entry')
