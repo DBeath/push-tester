@@ -154,27 +154,21 @@ def feed(id):
     abort(403)
 
 @app.route('/feeds/<int:id>/rss', methods=['GET'])
-@login_required
 def feed_rss(id):
-    permission = ViewFeedPermission(id)
+    feed = Feed.query.get(id)
 
-    if permission.can():
-        feed = Feed.query.get(id)
+    rss = feed.rss()
 
-        rss = feed.rss()
+    # f = open('rss.xml', 'w')
+    # f.write(rss.rss())
+    # f.close()
 
-        f = open('rss.xml', 'w')
-        f.write(rss.rss())
-        f.close()
+    headers = {}
+    headers['Link'] = str(LinkHeader([
+        Link(feed.hub, rel="hub"),
+        Link(feed.topic, rel="self")]))
 
-        headers = {}
-        headers['Link'] = str(LinkHeader([
-            Link(feed.hub, rel="hub"),
-            Link(feed.topic, rel="self")]))
-
-        return make_response(rss.rss(), 200, headers)
-
-    abort(403)
+    return make_response(rss.rss(), 200, headers)
 
 @app.route('/feeds/<int:id>/ping', methods=['POST'])
 @login_required

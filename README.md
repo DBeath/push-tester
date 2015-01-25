@@ -63,7 +63,7 @@ Install Nginx and uWSGI
 
 	sudo apt-get install nginx uwsgi
 
-Modify the ```nginx.conf``` file from the deployments folder and copy it to ```/etc/nginx/sites-available```. 
+Modify the ```nginx.conf``` file from the deployments folder and copy it to ```/etc/nginx/sites-enabled```. 
 
 Reload Nginx
 
