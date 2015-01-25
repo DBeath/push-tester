@@ -1,6 +1,7 @@
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.security import Security, SQLAlchemyUserDatastore
+from flask.ext.security.utils import encrypt_password
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
 from flask_mail import Mail
@@ -8,9 +9,15 @@ from flask_debugtoolbar import DebugToolbarExtension
 from werkzeug.contrib.fixers import ProxyFix
 from flask.ext.admin import Admin, AdminIndexView
 from flask.ext.admin.contrib.sqla import ModelView
+from datetime import datetime
 
-app = Flask(__name__)
-app.config.from_object('config.BaseConfig')
+app = Flask(__name__, instance_relative_config=True)
+
+# Load the default configuration
+app.config.from_object('config')
+
+# Load the configuration from the instance folder
+app.config.from_pyfile('config.py')
 
 if app.config['USE_PROXY']:
 	app.wsgi_app = ProxyFix(app.wsgi_app)
@@ -52,3 +59,16 @@ admin.add_view(SecuredModelView(User, db.session))
 admin.add_view(SecuredModelView(Feed, db.session))
 admin.add_view(SecuredModelView(Entry, db.session))
 admin.add_view(SecuredModelView(Author, db.session))
+
+@manager.command
+def add_admin(email, password):
+    """Add an admin user to your database"""
+    user = user_datastore.create_user(email=email,
+        password=encrypt_password(password))
+
+    admin_role = user_datastore.find_or_create_role("admin")
+    user_datastore.add_role_to_user(user, admin_role)
+    user.confirmed_at = datetime.utcnow()
+
+    db.session.commit()
+    print "Created admin user: %s" % (user, )

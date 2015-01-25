@@ -53,22 +53,6 @@ def on_identity_loaded(sender, identity):
         for entry in current_user.entries:
             identity.provides.add(ViewEntryNeed(unicode(entry.id)))
 
-@app.before_first_request
-def create_admin_user():
-    db.create_all()
-    adminRole = user_datastore.find_or_create_role(
-        name='admin', 
-        description='Admin Role')
-    db.session.add(adminRole)
-    if user_datastore.find_user(email=app.config['ADMIN_EMAIL']) is None:
-        adminUser = user_datastore.create_user(
-            email=app.config['ADMIN_EMAIL'],
-            password=encrypt_password(app.config['ADMIN_PASSWORD']))
-        user_datastore.add_role_to_user(adminUser, adminRole)
-        user_datastore.activate_user(adminUser)
-        db.session.add(adminUser)
-    db.session.commit()
-
 @app.route('/')
 def index():
     if current_user.is_authenticated():
@@ -84,7 +68,6 @@ def index():
 
     return render_template('index.html',
         title='Home')
-
 
 @app.route('/create_entry')
 @login_required

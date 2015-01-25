@@ -1,53 +1,47 @@
 import os
 
-class BaseConfig:
-	PROJECT_NAME = 'PuSH-Tester'
+PROJECT_NAME = 'PuSH-Tester'
 
-	DEBUG = True
-	
-	BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+DEBUG = True
 
-	SECURITY_REGISTERABLE = True
-	SECURITY_RECOVERABLE = True
-	SECURITY_CHANGEABLE = True
-	SECURITY_TRACKABLE = True
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
-	SECURITY_PASSWORD_HASH = 'bcrypt'
+SECURITY_REGISTERABLE = True
+SECURITY_RECOVERABLE = True
+SECURITY_CHANGEABLE = True
+SECURITY_TRACKABLE = True
 
-	SECURITY_PASSWORD_SALT = "0Cd3c-zGAcgE8mJQqWlO6xXq9nLrax3i"
-	SECURITY_CONFIRM_SALT = "fMcatrYiEcatqj-iX88SpDufjUf9fmrd"
-	SECURITY_RESET_SALT = "7aN1aWKlXp9aXT9mOGIi86D4-jhaqHXb"
-	SECURITY_REMEMBER_SALT = "YAZEI0YzVSzo8y0gGLptoYppvJCGrMQj"
+SECURITY_PASSWORD_HASH = 'bcrypt'
 
-	SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app.db')
+SECURITY_PASSWORD_SALT = "0Cd3c-zGAcgE8mJQqWlO6xXq9nLrax3i"
+SECURITY_CONFIRM_SALT = "fMcatrYiEcatqj-iX88SpDufjUf9fmrd"
+SECURITY_RESET_SALT = "7aN1aWKlXp9aXT9mOGIi86D4-jhaqHXb"
+SECURITY_REMEMBER_SALT = "YAZEI0YzVSzo8y0gGLptoYppvJCGrMQj"
 
-	CSRF_ENABLED = True
-	CSRF_SESSION_KEY = 'bEX878f8LR3eHYByk2Dx2LKSxRmaQb4t'
+SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app.db')
 
-	SECRET_KEY = '0CXgQPimsi72T-_XZPWTOKlBiaFuWPdz'
+CSRF_ENABLED = True
+CSRF_SESSION_KEY = 'bEX878f8LR3eHYByk2Dx2LKSxRmaQb4t'
 
-	# The Fully Qualified Domain Name where this application runs.
-	FQDN = 'http://localhost:5000'
+SECRET_KEY = '0CXgQPimsi72T-_XZPWTOKlBiaFuWPdz'
 
-	# Set to True if using a reverse proxy like Nginx.
-	USE_PROXY = False
+# The Fully Qualified Domain Name where this application runs.
+FQDN = 'http://localhost:5000'
 
-	ADMIN_EMAIL = 'admin@localhost.com'
-	ADMIN_PASSWORD = 'password'
+# Set to True if using a reverse proxy like Nginx.
+USE_PROXY = False
 
-	HUB_NAME = 'http://test.superfeedr.com/'
+ADMIN_EMAIL = 'admin@localhost.com'
+ADMIN_PASSWORD = 'password'
 
-	DEBUG_TB_INTERCEPT_REDIRECTS = False
+HUB_NAME = 'http://test.superfeedr.com/'
 
-	MAIL_SERVER = 'smtp.gmail.com'
-	MAIL_PORT = 465
-	MAIL_USE_SSL = True
-	MAIL_USERNAME = 'pushtester@gmail.com'
-	MAIL_PASSWORD = ''
+DEBUG_TB_INTERCEPT_REDIRECTS = False
 
-	DEFAULT_MAIL_SENDER = ("Push-Tester", "pushtester@gmail.com")
+MAIL_SERVER = 'smtp.gmail.com'
+MAIL_PORT = 465
+MAIL_USE_SSL = True
+MAIL_USERNAME = 'pushtester@gmail.com'
+MAIL_PASSWORD = ''
 
-
-class ProductionConfig(BaseConfig):
-	DEBUG = False
-	PROPAGATE_EXCEPTIONS = True
+DEFAULT_MAIL_SENDER = ("Push-Tester", "pushtester@gmail.com")
