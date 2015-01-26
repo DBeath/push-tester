@@ -25,5 +25,8 @@ class FeedTests(MainTestCase):
 	def test_ping(self):
 		assert True
 
+	def test_feed_header(self):
+		feed = Feed()
+
 if __name__ == '__main__':
     unittest.main()

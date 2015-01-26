@@ -145,7 +145,6 @@ def feed(id):
 
     if permission.can():
         feed = Feed.query.get(id)
-        print feed.get_rss_url()
         return render_template('feed.html',
             title='Feed %s' % id,
             feed=feed,
@@ -201,7 +200,7 @@ def delete_feed(id):
 @app.route('/entries')
 @login_required
 def entries():
-    entries = Entry.query.filter_by(user_id = current_user.id)
+    entries = Entry.query.filter_by(user_id = current_user.id).order_by(Entry.published.desc())
     return render_template('entries.html',
         title='Entries',
         entries=entries)
