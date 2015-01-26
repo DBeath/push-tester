@@ -1,4 +1,4 @@
-push-tester
+PuSH-Tester
 ===========
 
 PubSubHubbub publisher testing application. Designed to allow the creation of [RSS](http://en.wikipedia.org/wiki/RSS) feeds for testing [PubSubHubbub](https://code.google.com/p/pubsubhubbub/) Hubs and Subscribers.
