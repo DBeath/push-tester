@@ -90,7 +90,7 @@ class Feed(db.Model):
             'hub.url': self.get_rss_url()
         }
         r = requests.post(self.hub, params)
-        if r.status_code == requests.codes.ok:
+        if r.status_code in range(200,210):
             message = 'Hub was successfully pinged.', ALERT.SUCCESS
         else:
             message = 'Ping was unsuccessful.', ALERT.ERROR
