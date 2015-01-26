@@ -80,7 +80,7 @@ class Feed(db.Model):
         items = items,
         extensions = [
             PushLink(rel='hub', href=self.hub, xmlns='http://www.w3.org/2005/Atom'),
-            PushLink(rel='self', href=self.topic, xmlns='http://www.w3.org/2005/Atom')])
+            PushLink(rel='self', href=self.get_rss_url(), xmlns='http://www.w3.org/2005/Atom')])
 
         return rss
 

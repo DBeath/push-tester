@@ -166,7 +166,7 @@ def feed_rss(id):
     headers = {}
     headers['Link'] = str(LinkHeader([
         Link(feed.hub, rel="hub"),
-        Link(feed.topic, rel="self")]))
+        Link(feed.get_rss_url(), rel="self")]))
 
     return make_response(rss.rss(), 200, headers)
 
