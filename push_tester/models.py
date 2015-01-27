@@ -64,7 +64,9 @@ class Feed(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
-        return u'{0}'.format(self.topic)
+        if self.title:
+            return u'{0} <{1}>'.format(self.title, self.topic)
+        return u'<{0}>'.format(self.topic)
 
     def rss(self):
         items = []

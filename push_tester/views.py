@@ -158,9 +158,9 @@ def feed_rss(id):
 
     rss = feed.rss()
 
-    # f = open('rss.xml', 'w')
-    # f.write(rss.rss())
-    # f.close()
+    f = open('rss.xml', 'w')
+    f.write(rss.rss())
+    f.close()
 
     headers = {}
     headers['Link'] = str(LinkHeader([
@@ -206,16 +206,22 @@ def entries():
         entries=entries)
 
 @app.route('/entries/new', methods=['GET', 'POST'])
+@app.route('/entries/new/<feed_id>', methods=['GET', 'POST'])
 @login_required
-def new_entry():
-    feeds = Feed.query.filter_by(user_id = current_user.id).all()
+def new_entry(*feed_id):
+    if feed_id:
+        feeds = Feed.query.filter_by(user_id = current_user.id, id = feed_id).all()
+    else:
+        feeds = Feed.query.filter_by(user_id = current_user.id).all()
+
     if not feeds:
         flash(u'You must create a Feed first', ALERT.WARNING)
         return redirect(url_for('new_feed'))
 
     form = EntryForm()
-    form.feed.choices = [(f.id, f.topic) for f in feeds]
-    form.authors.choices = [(a.id, a.name) for a in Author.query.filter_by(user_id = current_user.id).all()]
+    form.feed.choices = [(f.id, repr(f)) for f in feeds]
+    form.authors.choices = [(a.id, repr(a)) for a in Author.query.filter_by(user_id = current_user.id).all()]
+    
     if request.method == 'POST':
         print form.published
         print form.published.data
