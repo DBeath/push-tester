@@ -3,6 +3,7 @@ from flask.ext.testing import TestCase
 from push_tester import app, db
 from push_tester.models import *
 
+
 class MainTestCase(TestCase):
 
     def create_app(self):
@@ -22,11 +23,11 @@ class MainTestCase(TestCase):
 
 class FeedTests(MainTestCase):
 
-	def test_ping(self):
-		assert True
+    def test_ping(self):
+        assert True
 
-	def test_feed_header(self):
-		feed = Feed()
+    # def test_feed_header(self):
+    #     feed = Feed()
 
 if __name__ == '__main__':
     unittest.main()

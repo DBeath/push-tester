@@ -1,7 +1,8 @@
 from flask.ext.wtf import Form
 from wtforms import StringField, TextAreaField, SelectField, validators, \
-    SelectMultipleField, FieldList, BooleanField
-from wtforms.ext.dateutil.fields import DateTimeField, DateField
+    SelectMultipleField, BooleanField
+from wtforms.ext.dateutil.fields import DateTimeField
+
 
 class AuthorForm(Form):
     name = StringField(u'Author', validators=[validators.InputRequired()])

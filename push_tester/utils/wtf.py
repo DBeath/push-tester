@@ -11,7 +11,7 @@ def add_helpers(app):
         return isinstance(field, BooleanField)
 
     def is_datetime_field_filter(field):
-    	return isinstance(field, DateTimeField)
+        return isinstance(field, DateTimeField)
 
     app.jinja_env.filters['is_hidden_field'] = is_hidden_field_filter
     app.jinja_env.filters['is_boolean_field'] = is_boolean_field_filter

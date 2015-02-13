@@ -1,22 +1,21 @@
-from . import app, db, user_datastore
-from flask import render_template, redirect, url_for, g, request, Response, make_response, abort, flash
+from . import app, db
+from flask import render_template, redirect, url_for, request, make_response, \
+    abort, flash
 from flask.ext.login import current_user
 from flask.ext.security import login_required
-from flask.ext.security.utils import encrypt_password
-from flask.ext.principal import identity_loaded, Permission, RoleNeed, UserNeed
+from flask.ext.principal import identity_loaded, Permission, RoleNeed
 from datetime import datetime
 from link_header import Link, LinkHeader
 from collections import namedtuple
 from functools import partial
-import requests
-from .models import User, Role, Feed, Entry, Author
+from .models import Feed, Entry, Author
 from .forms import AuthorForm, FeedForm, EntryForm
-from .rfeed import Item, Feed as rFeed, Guid, Serializable
 from .utils.bootstrap import ALERT
 
 
 FeedNeed = namedtuple('feed', ['method', 'value'])
 ViewFeedNeed = partial(FeedNeed, 'view')
+
 
 class ViewFeedPermission(Permission):
     def __init__(self, feed_id):
@@ -26,6 +25,7 @@ class ViewFeedPermission(Permission):
 EntryNeed = namedtuple('entry', ['method', 'value'])
 ViewEntryNeed = partial(EntryNeed, 'view')
 
+
 class ViewEntryPermission(Permission):
     def __init__(self, entry_id):
         need = ViewEntryNeed(unicode(entry_id))
@@ -34,12 +34,14 @@ class ViewEntryPermission(Permission):
 AuthorNeed = namedtuple('author', ['method', 'value'])
 ViewAuthorNeed = partial(AuthorNeed, 'view')
 
+
 class ViewAuthorPermission(Permission):
     def __init__(self, author_id):
         need = ViewAuthorNeed(unicode(author_id))
         super(ViewAuthorPermission, self).__init__(need)
 
 admin_permission = Permission(RoleNeed('admin'))
+
 
 @identity_loaded.connect_via(app)
 def on_identity_loaded(sender, identity):
@@ -52,6 +54,7 @@ def on_identity_loaded(sender, identity):
     if hasattr(current_user, 'entries'):
         for entry in current_user.entries:
             identity.provides.add(ViewEntryNeed(unicode(entry.id)))
+
 
 @app.route('/')
 def index():
@@ -69,10 +72,12 @@ def index():
     return render_template('index.html',
         title='Home')
 
+
 @app.route('/create_entry')
 @login_required
 def create_entry():
     return redirect(url_for('index'))
+
 
 @app.route('/authors')
 @login_required
@@ -81,6 +86,7 @@ def authors():
     return render_template('authors.html',
         authors=authors,
         title='Authors')
+
 
 @app.route('/authors/new', methods=['GET', 'POST'])
 @login_required
@@ -95,6 +101,7 @@ def new_author():
     return render_template('new_author.html',
         title='New Author',
         new_author_form=form)
+
 
 @app.route('/authors/<int:id>/delete', methods=['POST'])
 @login_required
@@ -118,6 +125,7 @@ def feeds():
         feeds=feeds,
         title='Feeds')
 
+
 @login_required
 @app.route('/feeds/new', methods=['GET', 'POST'])
 def new_feed():
@@ -138,6 +146,7 @@ def new_feed():
         title='New Feed',
         new_feed_form=form)
 
+
 @app.route('/feeds/<int:id>', methods=['GET'])
 @login_required
 def feed(id):
@@ -151,6 +160,7 @@ def feed(id):
             entries = feed.entries)
 
     abort(403)
+
 
 @app.route('/feeds/<int:id>/rss', methods=['GET'])
 def feed_rss(id):
@@ -169,6 +179,7 @@ def feed_rss(id):
 
     return make_response(rss.rss(), 200, headers)
 
+
 @app.route('/feeds/<int:id>/ping', methods=['POST'])
 @login_required
 def feed_ping(id):
@@ -181,6 +192,7 @@ def feed_ping(id):
         return redirect(url_for('feeds'))
 
     abort(403)
+
 
 @app.route('/feeds/<int:id>/delete', methods=['POST'])
 @login_required
@@ -197,6 +209,7 @@ def delete_feed(id):
 
     abort(403)
 
+
 @app.route('/entries')
 @login_required
 def entries():
@@ -205,14 +218,15 @@ def entries():
         title='Entries',
         entries=entries)
 
+
 @app.route('/entries/new', methods=['GET', 'POST'])
 @app.route('/entries/new/<feed_id>', methods=['GET', 'POST'])
 @login_required
 def new_entry(*feed_id):
     if feed_id:
-        feeds = Feed.query.filter_by(user_id = current_user.id, id = feed_id).all()
+        feeds = Feed.query.filter_by(user_id=current_user.id, id=feed_id).all()
     else:
-        feeds = Feed.query.filter_by(user_id = current_user.id).all()
+        feeds = Feed.query.filter_by(user_id=current_user.id).all()
 
     if not feeds:
         flash(u'You must create a Feed first', ALERT.WARNING)
@@ -220,7 +234,7 @@ def new_entry(*feed_id):
 
     form = EntryForm()
     form.feed.choices = [(f.id, repr(f)) for f in feeds]
-    form.authors.choices = [(a.id, repr(a)) for a in Author.query.filter_by(user_id = current_user.id).all()]
+    form.authors.choices = [(a.id, repr(a)) for a in Author.query.filter_by(user_id=current_user.id).all()]
     
     if request.method == 'POST':
         print form.published
@@ -248,12 +262,13 @@ def new_entry(*feed_id):
         if form.ping.data:
             feed = Feed.query.get(form.feed.data)
             message = feed.ping_hub()
-            flash(message[0], message[1])    
+            flash(message[0], message[1])
         return redirect(url_for('entries'))
 
     return render_template('new_entry.html',
         title='New Entry',
         new_entry_form=form)
+
 
 @app.route('/entries/<int:id>/delete', methods=['POST'])
 @login_required
@@ -266,4 +281,4 @@ def delete_entry(id):
         db.session.commit()
         return redirect(url_for('entries'))
 
-    abort(403)  
+    abort(403)

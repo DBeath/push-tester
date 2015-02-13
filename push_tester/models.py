@@ -1,11 +1,13 @@
-from . import db, app
+from . import db
 from flask.ext.security import UserMixin, RoleMixin
 from datetime import datetime
 import requests
 from .rfeed import Item, Feed as rFeed, Guid, Serializable
 from .utils.bootstrap import ALERT
 
+
 class PushLink(Serializable):
+
     def __init__(self, rel=None, href=None, xmlns=None):
         Serializable.__init__(self)
 
@@ -22,6 +24,7 @@ class PushLink(Serializable):
 roles_users = db.Table('roles_users',
     db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
     db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
+
 
 class Role(db.Model, RoleMixin):
     id = db.Column(db.Integer(), primary_key=True)
@@ -74,15 +77,15 @@ class Feed(db.Model):
             items.append(entry.rss())
 
         rss = rFeed(
-        title = self.title,
-        link = self.topic,
-        description = self.description,
-        lastBuildDate = datetime.utcnow(),
-        language = "en-US",
-        items = items,
-        extensions = [
-            PushLink(rel='hub', href=self.hub, xmlns='http://www.w3.org/2005/Atom'),
-            PushLink(rel='self', href=self.get_rss_url(), xmlns='http://www.w3.org/2005/Atom')])
+            title=self.title,
+            link=self.topic,
+            description=self.description,
+            lastBuildDate=datetime.utcnow(),
+            language="en-US",
+            items=items,
+            extensions=[
+                PushLink(rel='hub', href=self.hub, xmlns='http://www.w3.org/2005/Atom'),
+                PushLink(rel='self', href=self.get_rss_url(), xmlns='http://www.w3.org/2005/Atom')])
 
         return rss
 
@@ -92,7 +95,7 @@ class Feed(db.Model):
             'hub.url': self.get_rss_url()
         }
         r = requests.post(self.hub, params)
-        if r.status_code in range(200,210):
+        if r.status_code in range(200, 210):
             message = 'Hub was successfully pinged.', ALERT.SUCCESS
         else:
             message = 'Ping was unsuccessful.', ALERT.ERROR
@@ -104,6 +107,7 @@ class Feed(db.Model):
 authors_entries = db.Table('authors_entries',
     db.Column('author_id', db.Integer, db.ForeignKey('author.id')),
     db.Column('entry_id', db.Integer, db.ForeignKey('entry.id')))
+
 
 class Entry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -130,12 +134,12 @@ class Entry(db.Model):
         for author in self.authors:
             entry_author += repr(author) + ', '
         item = Item(
-            title = self.title,
-            link = self.link,
-            description = self.content,
-            author = entry_author,
-            guid = Guid(self.guid),
-            pubDate = self.published)
+            title=self.title,
+            link=self.link,
+            description=self.content,
+            author=entry_author,
+            guid=Guid(self.guid),
+            pubDate=self.published)
 
         return item
 
