@@ -55,6 +55,6 @@ target/
 
 **/rss.xml
 *.db
-**/static/.*
+**/static/.web*
 instance/
 *.sock
