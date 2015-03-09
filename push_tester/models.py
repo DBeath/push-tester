@@ -2,23 +2,8 @@ from . import db
 from flask.ext.security import UserMixin, RoleMixin
 from datetime import datetime
 import requests
-from .rfeed import Item, Feed as rFeed, Guid, Serializable
+from .rfeed import Item, Feed as rFeed, Guid, PushLink
 from .utils.bootstrap import ALERT
-
-
-class PushLink(Serializable):
-
-    def __init__(self, rel=None, href=None, xmlns=None):
-        Serializable.__init__(self)
-
-        self.rel = rel
-        self.href = href
-        self.xmlns = xmlns
-
-    def publish(self, handler):
-        Serializable.publish(self, handler)
-        handler.startElement("link", {"rel": self.rel, "href": self.href, "xmlns": self.xmlns})
-        handler.endElement("link")
 
 
 roles_users = db.Table('roles_users',
