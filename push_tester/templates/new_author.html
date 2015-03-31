@@ -5,7 +5,7 @@
   <h1>Create a new Author</h1>
 </div>
 
-<form class="form form-horizontal" action="{{ url_for('new_author') }}" method="POST" name="new_author_form">
+<form class="form form-horizontal" action="{{ url_for('frontend.new_author') }}" method="POST" name="new_author_form">
   {{ new_author_form.csrf_token }}
   
   {{ wtf.horizontal_field(new_author_form.name) }}

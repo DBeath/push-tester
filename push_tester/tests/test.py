@@ -1,6 +1,7 @@
 import unittest
 from flask.ext.testing import TestCase
-from push_tester import app, db
+from push_tester import create_app
+from push_tester.database import db
 from push_tester.models import *
 
 

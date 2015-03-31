@@ -1,5 +1,4 @@
-from .. import app
-from flask.ext.assets import Bundle, Environment
+from flask.ext.assets import Bundle
 
 bundles = {
 	'main_js': Bundle(
@@ -16,7 +15,3 @@ bundles = {
 		'css/custom-style.css',
 		output='gen/main.css') 
 }
-
-assets = Environment(app)
-
-assets.register(bundles)

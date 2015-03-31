@@ -5,7 +5,7 @@
   <h1>Create a new Entry</h1>
 </div>
 
-<form class="form form-horizontal" action="{{ url_for('new_entry') }}" method="post" name="new_entry_form">
+<form class="form form-horizontal" action="{{ url_for('frontend.new_entry') }}" method="post" name="new_entry_form">
   {{ new_entry_form.csrf_token }}
 
   {{ wtf.horizontal_field(new_entry_form.title) }}

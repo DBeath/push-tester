@@ -1,4 +1,6 @@
-from . import app, db
+from flask import current_app as app
+from . import frontend_blueprint as frontend
+from ..database import db
 from flask import render_template, redirect, url_for, request, make_response, \
     abort, flash
 from flask.ext.login import current_user
@@ -8,9 +10,9 @@ from datetime import datetime
 from link_header import Link, LinkHeader
 from collections import namedtuple
 from functools import partial
-from .models import Feed, Entry, Author
-from .forms import AuthorForm, FeedForm, EntryForm
-from .utils.bootstrap import ALERT
+from ..models import Feed, Entry, Author
+from ..forms import AuthorForm, FeedForm, EntryForm
+from ..utils.bootstrap import ALERT
 
 
 FeedNeed = namedtuple('feed', ['method', 'value'])
@@ -56,7 +58,7 @@ def on_identity_loaded(sender, identity):
             identity.provides.add(ViewEntryNeed(unicode(entry.id)))
 
 
-@app.route('/')
+@frontend.route('/')
 def index():
     if current_user.is_authenticated():
         entry_count = Entry.query.filter_by(user_id=current_user.id).count()
@@ -73,13 +75,13 @@ def index():
         title='Home')
 
 
-@app.route('/create_entry')
+@frontend.route('/create_entry')
 @login_required
 def create_entry():
     return redirect(url_for('index'))
 
 
-@app.route('/authors')
+@frontend.route('/authors')
 @login_required
 def authors():
     authors = Author.query.filter_by(user_id=current_user.id)
@@ -88,7 +90,7 @@ def authors():
         title='Authors')
 
 
-@app.route('/authors/new', methods=['GET', 'POST'])
+@frontend.route('/authors/new', methods=['GET', 'POST'])
 @login_required
 def new_author():
     form = AuthorForm()
@@ -103,7 +105,7 @@ def new_author():
         new_author_form=form)
 
 
-@app.route('/authors/<int:id>/delete', methods=['POST'])
+@frontend.route('/authors/<int:id>/delete', methods=['POST'])
 @login_required
 def delete_author(id):
     permission = ViewAuthorPermission(id)
@@ -117,7 +119,7 @@ def delete_author(id):
     abort(403)
 
 
-@app.route('/feeds')
+@frontend.route('/feeds')
 @login_required
 def feeds():
     feeds = Feed.query.filter_by(user_id=current_user.id)
@@ -127,7 +129,7 @@ def feeds():
 
 
 @login_required
-@app.route('/feeds/new', methods=['GET', 'POST'])
+@frontend.route('/feeds/new', methods=['GET', 'POST'])
 def new_feed():
     form = FeedForm()
     if request.method == 'POST' and form.validate():
@@ -147,7 +149,7 @@ def new_feed():
         new_feed_form=form)
 
 
-@app.route('/feeds/<int:id>', methods=['GET'])
+@frontend.route('/feeds/<int:id>', methods=['GET'])
 @login_required
 def feed(id):
     permission = ViewFeedPermission(id)
@@ -162,7 +164,7 @@ def feed(id):
     abort(403)
 
 
-@app.route('/feeds/<int:id>/rss', methods=['GET'])
+@frontend.route('/feeds/<int:id>/rss', methods=['GET'])
 def feed_rss(id):
     feed = Feed.query.get(id)
 
@@ -180,7 +182,7 @@ def feed_rss(id):
     return make_response(rss.rss(), 200, headers)
 
 
-@app.route('/feeds/<int:id>/ping', methods=['POST'])
+@frontend.route('/feeds/<int:id>/ping', methods=['POST'])
 @login_required
 def feed_ping(id):
     permission = ViewFeedPermission(id)
@@ -194,7 +196,7 @@ def feed_ping(id):
     abort(403)
 
 
-@app.route('/feeds/<int:id>/delete', methods=['POST'])
+@frontend.route('/feeds/<int:id>/delete', methods=['POST'])
 @login_required
 def delete_feed(id):
     permission = ViewFeedPermission(id)
@@ -210,7 +212,7 @@ def delete_feed(id):
     abort(403)
 
 
-@app.route('/entries')
+@frontend.route('/entries')
 @login_required
 def entries():
     entries = Entry.query.filter_by(user_id = current_user.id).order_by(Entry.published.desc())
@@ -219,8 +221,8 @@ def entries():
         entries=entries)
 
 
-@app.route('/entries/new', methods=['GET', 'POST'])
-@app.route('/entries/new/<feed_id>', methods=['GET', 'POST'])
+@frontend.route('/entries/new', methods=['GET', 'POST'])
+@frontend.route('/entries/new/<feed_id>', methods=['GET', 'POST'])
 @login_required
 def new_entry(*feed_id):
     if feed_id:
@@ -270,7 +272,7 @@ def new_entry(*feed_id):
         new_entry_form=form)
 
 
-@app.route('/entries/<int:id>/delete', methods=['POST'])
+@frontend.route('/entries/<int:id>/delete', methods=['POST'])
 @login_required
 def delete_entry(id):
     permission = ViewEntryPermission(id)

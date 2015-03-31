@@ -3,8 +3,8 @@
 <p>Topic: {{feed.topic}}</p>
 <p>Title: {{feed.title}}</p>
 <p>Description: {{feed.description}}</p>
-<a href="{{ url_for('feed_rss', id=feed.id) }}" class="btn btn-warning"><i class="fa fa-rss fa-fw"></i> RSS</a>
-<a href="{{ url_for('new_entry', feed_id=feed.id) }}" class="btn btn-primary">New Entry</a>
+<a href="{{ url_for('frontend.feed_rss', id=feed.id) }}" class="btn btn-warning"><i class="fa fa-rss fa-fw"></i> RSS</a>
+<a href="{{ url_for('frontend.new_entry', feed_id=feed.id) }}" class="btn btn-primary">New Entry</a>
 
 {% include "entry_table.html" %}
 {% endblock %}

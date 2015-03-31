@@ -22,7 +22,7 @@
         <td>{{entry.feed}}</td>
         <td>{{entry.authors}}</td>
         <td "col-sm-1">
-          <form action="{{ url_for('delete_entry', id=entry.id) }}" method="POST" role="form">
+          <form action="{{ url_for('frontend.delete_entry', id=entry.id) }}" method="POST" role="form">
             <button type="submit" class="btn btn-danger btn-xs" value="Delete"><i class="fa fa-trash-o fa-fw"></i> Delete</button>
           </form>
         </td>
