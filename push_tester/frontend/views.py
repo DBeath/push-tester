@@ -78,7 +78,7 @@ def index():
 @frontend.route('/create_entry')
 @login_required
 def create_entry():
-    return redirect(url_for('index'))
+    return redirect(url_for('frontend.index'))
 
 
 @frontend.route('/authors')
@@ -99,7 +99,7 @@ def new_author():
         author.user = current_user
         db.session.add(author)
         db.session.commit()
-        return redirect(url_for('authors'))
+        return redirect(url_for('frontend.authors'))
     return render_template('new_author.html',
         title='New Author',
         new_author_form=form)
@@ -114,7 +114,7 @@ def delete_author(id):
         author = Author.query.get(id)
         db.session.delete(author)
         db.session.commit()
-        return redirect(url_for('authors'))
+        return redirect(url_for('frontend.authors'))
 
     abort(403)
 
@@ -191,7 +191,7 @@ def feed_ping(id):
         feed = Feed.query.get(id)
         message = feed.ping_hub()
         flash(message[0], message[1])
-        return redirect(url_for('feeds'))
+        return redirect(url_for('frontend.feeds'))
 
     abort(403)
 
@@ -207,7 +207,7 @@ def delete_feed(id):
             db.session.delete(entry)
         db.session.delete(feed)
         db.session.commit()
-        return redirect(url_for('feeds'))
+        return redirect(url_for('frontend.feeds'))
 
     abort(403)
 
@@ -232,7 +232,7 @@ def new_entry(*feed_id):
 
     if not feeds:
         flash(u'You must create a Feed first', ALERT.WARNING)
-        return redirect(url_for('new_feed'))
+        return redirect(url_for('frontend.new_feed'))
 
     form = EntryForm()
     form.feed.choices = [(f.id, repr(f)) for f in feeds]
@@ -281,6 +281,6 @@ def delete_entry(id):
         entry = Entry.query.get(id)
         db.session.delete(entry)
         db.session.commit()
-        return redirect(url_for('entries'))
+        return redirect(url_for('frontend.entries'))
 
     abort(403)

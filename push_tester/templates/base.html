@@ -31,15 +31,15 @@
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#collapsible-navbar">
         <span class="sr-only">Toggle navigation</span>
         </button>
-        <a class="navbar-brand" href="{{ url_for('index') }}">{{ config["PROJECT_NAME"] }}</a>
+        <a class="navbar-brand" href="{{ url_for('frontend.index') }}">{{ config["PROJECT_NAME"] }}</a>
       </div>
 
       <div class="collapse navbar-collapse" id="collapsible-navbar">
         <ul class="nav navbar-nav">
           {% if current_user.is_authenticated() %}
-            {{ nav_link('feeds', 'Feeds') }}
-            {{ nav_link('entries', 'Entries') }}
-            {{ nav_link('authors', 'Authors') }}
+            {{ nav_link('frontend.feeds', 'Feeds') }}
+            {{ nav_link('frontend.entries', 'Entries') }}
+            {{ nav_link('frontend.authors', 'Authors') }}
           {% endif %}
         </ul>
 

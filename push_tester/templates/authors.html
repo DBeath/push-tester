@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <div>
-  <a href="{{ url_for('new_author') }}" class="btn btn-primary"><i class="fa fa-plus fa-fw"></i> New Author</a>
+  <a href="{{ url_for('frontend.new_author') }}" class="btn btn-primary"><i class="fa fa-plus fa-fw"></i> New Author</a>
 </div>
 <br/>
 
@@ -19,7 +19,7 @@
         <td>{{author.name}}</td>
         <td>{{author.email}}</td>
         <td class="col-sm-1">
-          <form action="{{ url_for('delete_author', id=author.id) }}" method="POST" role="form">
+          <form action="{{ url_for('frontend.delete_author', id=author.id) }}" method="POST" role="form">
             <button type="submit" class="btn btn-danger btn-xs" value="Delete"><i class="fa fa-trash-o fa-fw"></i> Delete</button>
           </form>
         </td>
