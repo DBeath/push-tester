@@ -39,15 +39,12 @@ def create_app(configclass):
     assets = Environment(app)
     assets.register(bundles)
 
-    from models import Role, User
+    from .models import User, Feed, Entry, Author, Role
 
     user_datastore = SQLAlchemyUserDatastore(db, User, Role)
     app.security = Security(app, user_datastore)
 
     wtf.add_helpers(app)
-
-    from .errors import *
-    from .models import User, Feed, Entry, Author
 
     admin = Admin(app, 'Admin', index_view=SecuredAdminIndexView())
     admin.add_view(SecuredModelView(User, db.session))
