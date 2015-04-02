@@ -1,7 +1,6 @@
 from flask import Flask
 from flask.ext.login import current_user
 from flask.ext.security import Security, SQLAlchemyUserDatastore
-from flask.ext.script import Manager
 from flask_mail import Mail
 from flask_debugtoolbar import DebugToolbarExtension
 from werkzeug.contrib.fixers import ProxyFix
@@ -10,6 +9,7 @@ from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.assets import Environment
 from .utils import wtf
 from .utils.assets import bundles
+from .utils.errors import add_errorhandlers
 from .database import db
 from .frontend import frontend_blueprint
 
@@ -56,6 +56,8 @@ def create_app(configclass):
     admin.add_view(SecuredModelView(Author, db.session))
 
     app.register_blueprint(frontend_blueprint)
+
+    add_errorhandlers(app)
 
     if not app.debug:
         import logging
