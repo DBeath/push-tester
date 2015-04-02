@@ -32,7 +32,7 @@ def create_app(configclass):
         app.wsgi_app = ProxyFix(app.wsgi_app)
 
     toolbar = DebugToolbarExtension(app)
-    
+
     db.init_app(app)
     mail.init_app(app)
 
@@ -57,6 +57,18 @@ def create_app(configclass):
 
     app.register_blueprint(frontend_blueprint)
 
+    if not app.debug:
+        import logging
+        from .utils.loggers import add_logger_filehandler, add_logger_external
+
+        add_logger_filehandler(app)
+
+        if app.config['LOG_ADDRESS']:
+            add_logger_external(app)
+
+        app.logger.setLevel(logging.INFO)
+        app.logger.info(u'{0} startup'.format(app.config['PROJECT_NAME']))
+
     return app
 
 
@@ -71,4 +83,3 @@ class SecuredModelView(ModelView):
 
     def is_accessible(self):
         return current_user.has_role('admin')
-
