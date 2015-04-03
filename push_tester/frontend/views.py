@@ -5,7 +5,7 @@ from flask import render_template, redirect, url_for, request, make_response, \
     abort, flash
 from flask.ext.login import current_user
 from flask.ext.security import login_required
-from flask.ext.principal import identity_loaded, Permission, RoleNeed
+from flask.ext.principal import identity_loaded, Permission, RoleNeed, UserNeed
 from datetime import datetime
 from link_header import Link, LinkHeader
 from collections import namedtuple
@@ -48,6 +48,14 @@ admin_permission = Permission(RoleNeed('admin'))
 @identity_loaded.connect_via(app)
 def on_identity_loaded(sender, identity):
     identity.user = current_user
+    print identity.user
+
+    if hasattr(current_user, 'id'):
+        identity.provides.add(UserNeed(current_user.id))
+
+    if hasattr(current_user, 'roles'):
+        for role in current_user.roles:
+            identity.provides.add(RoleNeed(role.name))
 
     if hasattr(current_user, 'feeds'):
         for feed in current_user.feeds:
@@ -56,6 +64,8 @@ def on_identity_loaded(sender, identity):
     if hasattr(current_user, 'entries'):
         for entry in current_user.entries:
             identity.provides.add(ViewEntryNeed(unicode(entry.id)))
+
+    print identity.provides
 
 
 @frontend.route('/')
@@ -153,6 +163,8 @@ def new_feed():
 @login_required
 def feed(id):
     permission = ViewFeedPermission(id)
+    print permission
+    print permission.can()
 
     if permission.can():
         feed = Feed.query.get(id)
@@ -265,7 +277,7 @@ def new_entry(*feed_id):
             feed = Feed.query.get(form.feed.data)
             message = feed.ping_hub()
             flash(message[0], message[1])
-        return redirect(url_for('frontend.entries'))
+        return redirect(url_for('entries'))
 
     return render_template('new_entry.html',
         title='New Entry',
@@ -276,6 +288,7 @@ def new_entry(*feed_id):
 @login_required
 def delete_entry(id):
     permission = ViewEntryPermission(id)
+    print permission
 
     if permission.can():
         entry = Entry.query.get(id)

@@ -6,12 +6,13 @@ from flask_debugtoolbar import DebugToolbarExtension
 from werkzeug.contrib.fixers import ProxyFix
 from flask.ext.admin import Admin, AdminIndexView
 from flask.ext.admin.contrib.sqla import ModelView
+from flask.ext.principal import Principal, identity_loaded
 from flask.ext.assets import Environment
 from .utils import wtf
 from .utils.assets import bundles
 from .utils.errors import add_errorhandlers
 from .database import db
-from .frontend import frontend_blueprint
+from .frontend import frontend_blueprint, on_identity_loaded
 
 mail = Mail()
 
@@ -53,8 +54,11 @@ def create_app(configclass):
     admin.add_view(SecuredModelView(Author, db.session))
 
     app.register_blueprint(frontend_blueprint)
+    identity_loaded.connect_via(app)(on_identity_loaded)
 
     add_errorhandlers(app)
+
+    Principal(app)
 
     if not app.debug:
         import logging
