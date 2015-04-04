@@ -163,8 +163,6 @@ def new_feed():
 @login_required
 def feed(id):
     permission = ViewFeedPermission(id)
-    print permission
-    print permission.can()
 
     if permission.can():
         feed = Feed.query.get(id)
