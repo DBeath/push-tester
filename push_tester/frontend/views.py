@@ -273,7 +273,7 @@ def new_entry(feed_id=None):
             feed = Feed.query.get(form.feed.data)
             message = feed.ping_hub()
             flash(message[0], message[1])
-        return redirect(url_for('entries'))
+        return redirect(url_for('frontend.entries'))
 
     return render_template('new_entry.html',
         title='New Entry',
