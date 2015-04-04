@@ -65,8 +65,6 @@ def on_identity_loaded(sender, identity):
         for entry in current_user.entries:
             identity.provides.add(ViewEntryNeed(unicode(entry.id)))
 
-    print identity.provides
-
 
 @frontend.route('/')
 def index():
