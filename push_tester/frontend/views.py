@@ -151,7 +151,7 @@ def new_feed():
         feed.topic = app.config['FQDN'] + '/feeds/%s' % feed.id
         db.session.commit()
         flash(u'{0} was successfully created'.format(feed.title), ALERT.SUCCESS)
-        return redirect(url_for('feeds'))
+        return redirect(url_for('frontend.feeds'))
     return render_template('new_feed.html',
         title='New Feed',
         new_feed_form=form)
@@ -230,9 +230,9 @@ def entries():
 
 
 @frontend.route('/entries/new', methods=['GET', 'POST'])
-@frontend.route('/entries/new/<feed_id>', methods=['GET', 'POST'])
+@frontend.route('/entries/new/<int:feed_id>', methods=['GET', 'POST'])
 @login_required
-def new_entry(*feed_id):
+def new_entry(feed_id=None):
     if feed_id:
         feeds = Feed.query.filter_by(user_id=current_user.id, id=feed_id).all()
     else:
