@@ -18,8 +18,11 @@ mail = Mail()
 
 
 def create_app(configclass):
-    app = Flask(__name__, instance_relative_config=True)
+    application = Flask(__name__, instance_relative_config=True)
+    initialise_app(application, configclass)
+    return application
 
+def initialise_app(app, configclass):
     # Load the default configuration
     app.config.from_object(configclass)
 

@@ -148,7 +148,8 @@ def new_feed():
         feed.hub = form.hub.data
         db.session.add(feed)
         db.session.flush()
-        feed.topic = app.config['FQDN'] + '/feeds/%s' % feed.id
+        # feed.topic = app.config['FQDN'] + '/feeds/%s' % feed.id
+        feed.topic = url_for('frontend.feed', id=feed.id, _external=True)
         db.session.commit()
         flash(u'{0} was successfully created'.format(feed.title), ALERT.SUCCESS)
         return redirect(url_for('frontend.feeds'))
@@ -265,7 +266,8 @@ def new_entry(feed_id=None):
         db.session.add(entry)
 
         db.session.flush()
-        entry.guid = app.config['FQDN'] + '/entries/%s' % entry.id
+        # entry.guid = app.config['FQDN'] + '/entries/%s' % entry.id
+        entry.guid = url_for('frontend.entry', id=entry.id, _external=True)
         entry.link = entry.guid
         db.session.commit()
 
@@ -279,6 +281,15 @@ def new_entry(feed_id=None):
         title='New Entry',
         new_entry_form=form)
 
+@frontend.route('/entries/<int:id>', methods=['GET'])
+@login_required
+def entry(id):
+    permission = ViewEntryPermission(id)
+    if permission.can():
+        entry = Entry.query.get(id)
+        return entry
+
+    abort(403)
 
 @frontend.route('/entries/<int:id>/delete', methods=['POST'])
 @login_required

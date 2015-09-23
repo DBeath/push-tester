@@ -14,7 +14,7 @@ class ContextFilter(logging.Filter):
 def add_logger_filehandler(app):
     """Creates a RotatingFileHandler logger"""
 
-    file_handler = RotatingFileHandler('logs/flaskfeedr.log', 'a',
+    file_handler = RotatingFileHandler(app.config['LOG_FILE'], 'a',
                                        1 * 1024 * 1024, 10)
     FORMAT = '%(asctime)s %(hostname)s {0} :%(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'.format(
         app.config['PROJECT_NAME'])

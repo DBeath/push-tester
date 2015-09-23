@@ -33,9 +33,6 @@ class Config():
     # Set to True if using a reverse proxy like Nginx.
     USE_PROXY = False
 
-    ADMIN_EMAIL = 'admin@localhost.com'
-    ADMIN_PASSWORD = 'password'
-
     HUB_NAME = 'http://test.superfeedr.com/'
 
     DEBUG_TB_INTERCEPT_REDIRECTS = False
@@ -47,6 +44,11 @@ class Config():
     MAIL_PASSWORD = ''
 
     DEFAULT_MAIL_SENDER = ("Push-Tester", "pushtester@gmail.com")
+
+    LOG_ADDRESS = None
+    LOG_PORT = 514
+
+    LOG_FILE = 'pushtester.log'
 
 
 class ProductionConfig(Config):
